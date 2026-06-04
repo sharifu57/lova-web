@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Plus } from "lucide-react";
 
@@ -45,9 +46,8 @@ export function FAQ() {
             return (
               <li
                 key={f.q}
-                className={`rounded-3xl border border-border/60 transition-all ${
-                  isOpen ? "bg-card shadow-card" : "bg-card/40"
-                }`}
+                className={`rounded-3xl border border-border/60 transition-all ${isOpen ? "bg-card shadow-card" : "bg-card/40"
+                  }`}
               >
                 <button
                   className="w-full flex items-center justify-between gap-6 text-left p-6"
@@ -55,17 +55,15 @@ export function FAQ() {
                 >
                   <span className="text-lg font-medium">{f.q}</span>
                   <span
-                    className={`grid place-items-center h-9 w-9 rounded-full bg-rose/25 text-primary transition ${
-                      isOpen ? "rotate-45" : ""
-                    }`}
+                    className={`grid place-items-center h-9 w-9 rounded-full bg-rose/25 text-primary transition ${isOpen ? "rotate-45" : ""
+                      }`}
                   >
                     <Plus className="h-4 w-4" />
                   </span>
                 </button>
                 <div
-                  className={`grid transition-all duration-300 ease-out ${
-                    isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
-                  }`}
+                  className={`grid transition-all duration-300 ease-out ${isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                    }`}
                 >
                   <div className="overflow-hidden">
                     <p className="px-6 pb-6 text-muted-foreground leading-relaxed">{f.a}</p>

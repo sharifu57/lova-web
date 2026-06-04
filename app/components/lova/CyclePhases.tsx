@@ -1,3 +1,4 @@
+"use client";
 import { useState } from "react";
 import { Droplet, Flower2, Sun, Moon } from "lucide-react";
 
@@ -87,11 +88,10 @@ export function CyclePhases() {
                 <button
                   key={p.key}
                   onClick={() => setActive(i)}
-                  className={`absolute h-20 w-20 sm:h-24 sm:w-24 -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center text-xs font-medium transition-all ${
-                    active === i
-                      ? "scale-110 shadow-glow ring-4 ring-white"
-                      : "opacity-80 hover:scale-105"
-                  } ${p.bg}`}
+                  className={`absolute h-20 w-20 sm:h-24 sm:w-24 -translate-x-1/2 -translate-y-1/2 rounded-full flex flex-col items-center justify-center text-xs font-medium transition-all ${active === i
+                    ? "scale-110 shadow-glow ring-4 ring-white"
+                    : "opacity-80 hover:scale-105"
+                    } ${p.bg}`}
                   style={{ left: `${x}%`, top: `${y}%` }}
                 >
                   <p.icon className="h-5 w-5" style={{ color: p.color }} />

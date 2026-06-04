@@ -1,6 +1,6 @@
+"use client";
 import { useEffect, useState } from "react";
 import { Menu, X, Heart } from "lucide-react";
-import logo from "@/assets/lova_logo.png";
 
 const links = [
   { href: "#features", label: "Features" },
@@ -23,19 +23,17 @@ export function Navbar() {
 
   return (
     <header
-      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${
-        scrolled ? "py-3" : "py-5"
-      }`}
+      className={`fixed top-0 inset-x-0 z-50 transition-all duration-300 ${scrolled ? "py-3" : "py-5"
+        }`}
     >
       <div className="mx-auto max-w-7xl px-4">
         <nav
-          className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all ${
-            scrolled ? "glass shadow-soft" : ""
-          }`}
+          className={`flex items-center justify-between rounded-2xl px-4 sm:px-6 py-3 transition-all ${scrolled ? "glass shadow-soft" : ""
+            }`}
         >
           <a href="#" className="flex items-center gap-2">
             <span className="grid place-items-center h-12 w-12 rounded-xl  overflow-hidden">
-              <img src={logo} alt="LOVA Logo" className="object-contain" width={40} height={40} />
+              <img src="/assets/lova_logo.png" alt="LOVA Logo" className="object-contain" width={40} height={40} />
             </span>
             <span className="font-display text-lg tracking-tight">LOVA</span>
           </a>

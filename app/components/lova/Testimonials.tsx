@@ -1,23 +1,23 @@
 import { Star } from "lucide-react";
-import t1 from "@/assets/testimonial-1.jpg";
-import t2 from "@/assets/testimonial-2.jpg";
-import t3 from "@/assets/testimonial-3.jpg";
+// import t1 from "@/assets/testimonial-1.jpg";
+// import t2 from "@/assets/testimonial-2.jpg";
+// import t3 from "@/assets/testimonial-3.jpg";
 
 const items = [
   {
-    img: t1,
+    img: "/assets/testimonial-1.jpg",
     name: "Zawadi · 27",
     text:
       "For the first time I actually understand my mood swings. LOVA explained my luteal phase and everything clicked.",
   },
   {
-    img: t2,
+    img: "/assets/testimonial-2.jpg",
     name: "Layla · 31",
     text:
       "The Kungwi chat changed something in me. Felt like calling an aunt who always knows what to say.",
   },
   {
-    img: t3,
+    img: "/assets/testimonial-3.jpg",
     name: "Mariam · 24",
     text:
       "Predictions are scary accurate. My cramps are softer now that I prep for them — I feel cared for.",
@@ -41,9 +41,8 @@ export function Testimonials() {
           {items.map((t, i) => (
             <figure
               key={t.name}
-              className={`rounded-3xl bg-card shadow-card border border-border/50 p-8 ${
-                i === 1 ? "md:-translate-y-4" : ""
-              }`}
+              className={`rounded-3xl bg-card shadow-card border border-border/50 p-8 ${i === 1 ? "md:-translate-y-4" : ""
+                }`}
             >
               <div className="flex gap-0.5 text-primary">
                 {Array.from({ length: 5 }).map((_, k) => (

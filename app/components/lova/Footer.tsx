@@ -1,3 +1,4 @@
+"use client";
 import { Heart, Instagram, Twitter, Facebook, Youtube, ArrowRight } from "lucide-react";
 
 export function Footer() {

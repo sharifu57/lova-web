@@ -1,6 +1,6 @@
 import { Apple, Play, QrCode } from "lucide-react";
 
-export function Download() {
+export function DownloadComponent() {
   return (
     <section id="download" className="relative py-24 sm:py-32">
       <div className="mx-auto max-w-6xl px-4">

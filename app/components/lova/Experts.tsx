@@ -1,8 +1,8 @@
 import { Star, MessageCircle, BadgeCheck } from "lucide-react";
-import mentor1 from "@/assets/mentor-1.jpg";
-import mentor2 from "@/assets/mentor-2.jpg";
-import expert1 from "@/assets/expert-1.jpg";
-import expert2 from "@/assets/expert-2.jpg";
+// import mentor1 from "@/assets/mentor-1.jpg";
+// import mentor2 from "@/assets/mentor-2.jpg";
+// import expert1 from "@/assets/expert-1.jpg";
+// import expert2 from "@/assets/expert-2.jpg";
 
 type Person = {
   name: string;
@@ -20,7 +20,7 @@ const kungwi: Person[] = [
     specialty: "Relationships · Womanhood",
     rating: 4.9,
     available: "Available now",
-    img: mentor1,
+    img: "/assets/mentor-1.jpg",
   },
   {
     name: "Kungwi Halima",
@@ -28,7 +28,7 @@ const kungwi: Person[] = [
     specialty: "Marriage · Motherhood",
     rating: 5.0,
     available: "Today · 4pm",
-    img: mentor2,
+    img: "/assets/mentor-2.jpg",
   },
 ];
 
@@ -39,7 +39,7 @@ const experts: Person[] = [
     specialty: "Hormonal health · PCOS",
     rating: 4.9,
     available: "Available now",
-    img: expert1,
+    img: "/assets/expert-1.jpg",
   },
   {
     name: "Dr. Leila Ahmed",
@@ -47,7 +47,7 @@ const experts: Person[] = [
     specialty: "Fertility · Wellness",
     rating: 4.8,
     available: "Today · 6pm",
-    img: expert2,
+    img: "/assets/expert-2.jpg",
   },
 ];
 

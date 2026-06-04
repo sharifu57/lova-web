@@ -2,7 +2,7 @@ import {
   Calendar,
   Activity,
   Sparkles,
-  MessageCircleHeart,
+  MessageCircle,
   Stethoscope,
   Users,
   HeartPulse,
@@ -29,7 +29,7 @@ const features = [
     tint: "bg-lavender text-plum",
   },
   {
-    icon: MessageCircleHeart,
+    icon: MessageCircle,
     title: "Chat with Kungwi",
     desc: "Privately talk with experienced Kungwi mentors for cultural & relationship guidance.",
     tint: "bg-rose/30 text-primary",
