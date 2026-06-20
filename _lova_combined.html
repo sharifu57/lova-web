@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LOVA — Wellness, Simplified.</title>
+<meta name="description" content="LOVA is a private SRHR and wellness companion for adults across Africa — learn, track, ask, share, and care with confidence.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/lova.css">
+<script>try{var t=localStorage.getItem('lova-theme');if(t)document.documentElement.setAttribute('data-theme',t==='bright'?'bright':'soft');}catch(e){}</script>
+<style>
+/* single-file router */
+.route{display:none}
+.route.active,.route[data-active]{display:block}
+</style>
+<style>
+  .cal { aspect-ratio:1; border-radius:50%; background:var(--cream-3); display:block; }
+  .cal.p { background:var(--coral); }
+  .cal.f { background:var(--lavender-2); }
+  .cal.o { background:var(--plum); }
+
+  /* ===== Cuter hero dashboard ===== */
+  .hero-stage { position:relative; display:flex; justify-content:center; }
+  .hero-greet { display:flex; align-items:center; justify-content:space-between; }
+  .hero-greet .gm { font-size:9px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .hero-greet .hi { font-family:var(--font-display); font-size:18px; color:var(--ink); margin-top:1px; }
+  .hero-greet .heart { width:26px; height:26px; border-radius:50%; background:var(--grad-warm); display:grid; place-items:center; color:#fff; }
+  .hero-greet .heart svg { width:13px; height:13px; }
+  .fert-circle { width:148px; height:148px; margin:14px auto 4px; border-radius:50%; background:#fff;
+    display:grid; place-content:center; text-align:center;
+    box-shadow:0 0 0 10px rgba(246,213,206,.45), 0 14px 30px -16px rgba(224,126,99,.5); }
+  .fert-circle .fc-day { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .fert-circle .fc-big { font-family:var(--font-display); font-size:30px; color:var(--coral-deep); line-height:1; margin:2px 0; }
+  .fert-circle .fc-sub { font-size:9.5px; color:var(--muted); }
+  .fert-circle .fc-note { font-size:8.5px; color:var(--plum); font-weight:600; margin-top:4px; }
+  .stat-row { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-top:26px; }
+  .stat-pill { border-radius:12px; padding:8px 4px; text-align:center; }
+  .stat-pill .sl { font-size:7px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .stat-pill .sv { font-size:12px; font-weight:700; color:var(--ink); margin-top:2px; }
+  .tip-card { display:flex; align-items:center; gap:8px; margin-top:9px; background:var(--paper); border:1px solid var(--line-2); border-radius:13px; padding:9px 11px; }
+  .tip-card .tav { width:24px; height:24px; border-radius:50%; background:var(--grad-plum); display:grid; place-items:center; color:#fff; flex:none; }
+  .tip-card .tav svg { width:13px; height:13px; }
+  .fc-float { position:absolute; z-index:6; background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+    border:1px solid rgba(255,255,255,.8); border-radius:16px; padding:11px 14px;
+    box-shadow:0 18px 40px -22px rgba(91,39,64,.5); display:flex; align-items:center; gap:10px; }
+  .fc-float .fi { width:30px; height:30px; border-radius:10px; display:grid; place-items:center; flex:none; }
+  .fc-float .fi svg { width:16px; height:16px; }
+  .fc-float .fk { font-size:8px; letter-spacing:.1em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .fc-float .fv { font-size:13px; font-weight:700; color:var(--ink); }
+  .fc-period { top:64px; left:-26px; }
+  .fc-mood { top:240px; right:-34px; }
+  @media(max-width:1080px){ .fc-period{left:-6px} .fc-mood{right:-6px} }
+  @media(max-width:560px){ .fc-float{ display:none; } }
+
+  /* ===== Cuter split download CTA ===== */
+  .cta-split {
+    background: linear-gradient(125deg, #EE7E8E 0%, #D169A6 50%, #A65FB0 100%) !important;
+    display:grid; grid-template-columns:1.25fr .75fr; gap:40px; align-items:center; text-align:left !important;
+  }
+  .cta-split .eyebrow::before { background:#fff; opacity:.8; }
+  .cta-qr { position:relative; z-index:1; display:flex; align-items:center; gap:18px;
+    background:rgba(255,255,255,.16); border:1px solid rgba(255,255,255,.28); border-radius:var(--r-lg); padding:22px; }
+  .qr-box { width:108px; height:108px; flex:none; border-radius:16px; background:#fff; padding:6px; box-shadow:0 12px 26px -14px rgba(74,30,51,.5); }
+  .qr-box svg { width:100%; height:100%; }
+  .qr-text .qk { font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.8); font-weight:600; }
+  .qr-text .qv { font-family:var(--font-display); font-size:1.25rem; color:#fff; line-height:1.2; margin-top:6px; }
+  @media(max-width:780px){
+    .cta-split { grid-template-columns:1fr; gap:28px; text-align:center !important; }
+    .cta-split .cta-left > div { align-items:center !important; }
+    .cta-split .eyebrow { justify-content:center; }
+    .cta-split .stores { justify-content:center; }
+    .cta-qr { justify-content:center; }
+  }
+
+
+  .phase-tabs { display:flex; flex-wrap:wrap; gap:10px; }
+  .phase-tab { padding:12px 20px; border-radius:var(--pill); border:1.5px solid var(--line); background:#fff; font-weight:600; color:var(--ink-soft); transition:all .25s; }
+  .phase-tab.on { color:#fff; border-color:transparent; }
+  .phase-tab[data-tab="menstrual"].on { background:var(--coral-deep); }
+  .phase-tab[data-tab="follicular"].on { background:var(--plum-soft); }
+  .phase-tab[data-tab="ovulation"].on { background:var(--berry); }
+  .phase-tab[data-tab="luteal"].on { background:var(--lavender-2); color:var(--wine); }
+  .phase-panel { display:none; }
+  .phase-panel.show { display:block; animation:fade .4s ease; }
+  @keyframes fade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .ring-seg { cursor:pointer; transition:opacity .2s; }
+  .track-item { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line-2); border-radius:var(--pill); padding:11px 18px; font-weight:500; color:var(--ink-soft); font-size:.95rem; }
+  .track-item::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--grad-warm); flex:none; }
+  .preg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+  .preg-grid li { font-size:.98rem; }
+  @media(max-width:520px){ .preg-grid { grid-template-columns:1fr; } }
+
+  /* ===== Cute cycle wheel ===== */
+  .cyclewheel { position:relative; width:min(420px, 86vw); aspect-ratio:1; margin:0 auto; }
+  .cw-ring {
+    position:absolute; inset:6%; border-radius:50%;
+    background: conic-gradient(from -45deg,
+      #F6B8A6 0deg, #E79BC0 90deg, #C9B2E6 180deg, #F4C0CC 270deg, #F6B8A6 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%, #000 75%, transparent 78%);
+            mask: radial-gradient(circle, transparent 60%, #000 62%, #000 75%, transparent 78%);
+    filter: blur(7px); opacity:.6;
+  }
+  .cw-center { position:absolute; inset:0; display:grid; place-content:center; text-align:center; pointer-events:none; }
+  .cw-day { font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .cw-name { font-family:var(--font-display); font-size:clamp(1.8rem,3vw,2.6rem); color:var(--plum); line-height:1; margin-top:6px; transition:color .35s; }
+  .cw-node {
+    position:absolute; width:23%; aspect-ratio:1; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    background:#fff; color:var(--ink-soft); cursor:pointer;
+    box-shadow: 0 10px 26px -14px rgba(91,39,64,.4);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, background .35s, color .35s;
+  }
+  .cw-node .cw-ic { width:24px; height:24px; }
+  .cw-node .cw-ic svg { width:100%; height:100%; }
+  .cw-node .cw-lbl { font-size:.74rem; font-weight:600; }
+  .pos-top { top:0; left:50%; transform:translate(-50%,-12%); }
+  .pos-right { top:50%; right:0; transform:translate(12%,-50%); }
+  .pos-bottom { bottom:0; left:50%; transform:translate(-50%,12%); }
+  .pos-left { top:50%; left:0; transform:translate(-12%,-50%); }
+  .cw-node.on { color:#fff; }
+  .cw-node[data-phase="menstrual"].on { background:linear-gradient(150deg,#F08A6E,#E0633F); }
+  .cw-node[data-phase="follicular"].on { background:linear-gradient(150deg,#F8C29A,#EE9F6B); }
+  .cw-node[data-phase="ovulation"].on { background:linear-gradient(150deg,#E48BAE,#C2557D); }
+  .cw-node[data-phase="luteal"].on { background:linear-gradient(150deg,#CDBDEC,#A98FD6); }
+  .pos-top.on { transform:translate(-50%,-12%) scale(1.14); }
+  .pos-right.on { transform:translate(12%,-50%) scale(1.14); }
+  .pos-bottom.on { transform:translate(-50%,12%) scale(1.14); }
+  .pos-left.on { transform:translate(-12%,-50%) scale(1.14); }
+  .cw-node:not(.on):hover { transform-origin:center; box-shadow:0 14px 30px -12px rgba(91,39,64,.5); }
+  .pos-top:not(.on):hover { transform:translate(-50%,-16%); }
+  .pos-right:not(.on):hover { transform:translate(16%,-50%); }
+  .pos-bottom:not(.on):hover { transform:translate(-50%,16%); }
+  .pos-left:not(.on):hover { transform:translate(-16%,-50%); }
+
+  .cw-card { padding:34px; }
+  .cw-card-head { display:flex; align-items:center; gap:16px; padding-bottom:8px; }
+  .cw-card-ic { width:50px; height:50px; border-radius:15px; flex:none; display:grid; place-items:center; color:#fff; }
+  .cw-card-ic svg { width:25px; height:25px; }
+  .cw-card-name { transition:color .35s; }
+  .cw-rows { margin-top:8px; }
+  .cw-row { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:baseline; padding:18px 0; border-bottom:1px solid var(--line-2); }
+  .cw-row:last-child { border-bottom:none; }
+  .cw-row .k { font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .cw-row .v { color:var(--ink); font-size:1.02rem; }
+  @media(max-width:860px){
+    .cyclewheel-wrap { grid-template-columns:1fr !important; gap:32px !important; }
+    .cw-row { grid-template-columns:1fr; gap:3px; }
+  }
+
+
+  .cat { display:flex; gap:16px; align-items:flex-start; }
+  .cat .cat-ic { width:46px; height:46px; border-radius:14px; flex:none; display:grid; place-items:center; background:var(--grad-rose); color:var(--plum); }
+  .cat .cat-ic svg { width:22px; height:22px; }
+  .qrow { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:18px 24px; border-bottom:1px solid var(--line-2); transition:padding-left .25s, background .25s; cursor:default; }
+  .qrow:hover { padding-left:34px; background:var(--cream-2); }
+  .qrow:last-child { border-bottom:none; }
+  .qrow .q { font-family:var(--font-display); font-size:1.18rem; color:var(--ink); }
+  .qrow .arrow { color:var(--coral-deep); flex:none; }
+
+
+  .rule { display:flex; gap:12px; align-items:flex-start; padding:13px 0; border-bottom:1px solid var(--line-2); }
+  .rule:last-child { border-bottom:none; }
+  .rule .ic { width:22px; height:22px; border-radius:50%; flex:none; display:grid; place-items:center; margin-top:1px; }
+  .rule.yes .ic { background:rgba(31,138,91,.14); color:#1F8A5B; }
+  .rule.no .ic { background:rgba(176,52,52,.12); color:#B03434; }
+  .rule .ic svg { width:13px; height:13px; }
+
+
+  .prod { border-radius:var(--r-md); overflow:hidden; border:1px solid var(--line-2); background:#fff; transition:transform .35s, box-shadow .35s; }
+  .prod:hover { transform:translateY(-5px); box-shadow:var(--shadow-card); }
+  .prod .shot { aspect-ratio:1; display:grid; place-items:center; position:relative; }
+  .prod .shot span { font-family:ui-monospace,Menlo,monospace; font-size:.66rem; color:var(--plum-soft); background:rgba(255,255,255,.72); padding:4px 9px; border-radius:99px; }
+  .prod .meta { padding:14px 16px; }
+  .prod .meta .nm { font-family:var(--font-display); font-size:1.05rem; color:var(--ink); }
+  .prod .meta .pc { font-size:.85rem; color:var(--muted); }
+
+
+  .safe-block { display:grid; grid-template-columns:auto 1fr; gap:22px; padding:30px 0; border-bottom:1px solid var(--line-2); }
+  .safe-block:last-child { border-bottom:none; }
+  .safe-ic { width:52px; height:52px; border-radius:15px; display:grid; place-items:center; background:var(--grad-rose); color:var(--plum); flex:none; }
+  .safe-ic svg { width:26px; height:26px; }
+  @media(max-width:620px){ .safe-block { grid-template-columns:1fr; } }
+
+
+  .acc { border:1px solid var(--line-2); background:var(--paper); border-radius:var(--r-md); margin-bottom:14px; overflow:hidden; transition:border-color .3s, box-shadow .3s; }
+  .acc.open { border-color:var(--blush); box-shadow:var(--shadow-card); }
+  .acc-q { width:100%; display:flex; align-items:center; justify-content:space-between; gap:18px; text-align:left; padding:24px 28px; font-family:var(--font-display); font-size:1.22rem; color:var(--ink); }
+  .acc-q .pl { flex:none; width:30px; height:30px; border-radius:50%; background:var(--cream-2); display:grid; place-items:center; transition:background .3s, transform .3s; color:var(--plum); }
+  .acc.open .acc-q .pl { background:var(--grad-warm); transform:rotate(45deg); }
+  .acc-q .pl svg { width:15px; height:15px; }
+  .acc-a { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.3,.7,.3,1); }
+  .acc.open .acc-a { max-height:340px; }
+  .acc-a-inner { padding:0 28px 26px; color:var(--muted); line-height:1.6; }
+
+
+  .field { display:flex; flex-direction:column; gap:7px; margin-bottom:18px; }
+  .field label { font-size:.85rem; font-weight:600; color:var(--ink-soft); }
+  .field input, .field select, .field textarea {
+    font-family:inherit; font-size:1rem; color:var(--ink);
+    background:var(--paper); border:1.5px solid var(--line); border-radius:14px;
+    padding:14px 16px; transition:border-color .2s, box-shadow .2s; width:100%;
+  }
+  .field textarea { resize:vertical; min-height:130px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--plum); box-shadow:0 0 0 4px rgba(91,39,64,.08); }
+  .field .invalid { border-color:#B03434; box-shadow:0 0 0 4px rgba(176,52,52,.08); }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:620px){ .field-row { grid-template-columns:1fr; } }
+  .contact-card { display:flex; gap:16px; align-items:flex-start; padding:22px; border-radius:var(--r-md); background:var(--paper); border:1px solid var(--line-2); transition:transform .3s, box-shadow .3s; }
+  .contact-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-card); }
+  .contact-card .ic { width:44px; height:44px; border-radius:13px; flex:none; display:grid; place-items:center; background:var(--grad-rose); color:var(--plum); }
+  .contact-card .ic svg { width:21px; height:21px; }
+  .contact-card .nm { font-family:var(--font-display); font-size:1.1rem; color:var(--ink); }
+  .contact-card .ds { font-size:.88rem; color:var(--muted); margin-top:2px; }
+  .contact-card .em { font-size:.88rem; color:var(--plum); font-weight:600; font-style:normal; margin-top:6px; display:block; }
+</style>
+</head>
+<body data-page="home">
+<template id="__bundler_thumbnail" data-bg-color="#FBF5EF">
+<svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+<rect width="1200" height="800" fill="#FBF5EF"/>
+<g transform="translate(600,360)" fill="#EE9F6B">
+<path d="M0 -150C40 -70 56 -10 56 38 0 70 -28 92 -28 92 -56 70 -56 38 0 -10 56 38 56 70 28 92 28 92 0 70 0 38 0 -10z"/>
+</g>
+<text x="600" y="560" font-family="Georgia,serif" font-size="92" fill="#2A2024" text-anchor="middle" letter-spacing="10">LOVA</text>
+<text x="600" y="630" font-family="Georgia,serif" font-style="italic" font-size="40" fill="#7B6A70" text-anchor="middle">Wellness, Simplified.</text>
+</svg>
+</template>
+<header id="site-header"></header>
+<main>
+<div class="route" data-route="home" data-active>
+<!-- ============ HERO ============ -->
+  <section class="hero section tex">
+    <div class="blob" style="width:520px;height:520px;background:var(--blush);top:-180px;right:-120px"></div>
+    <div class="blob" style="width:380px;height:380px;background:var(--lavender);top:140px;left:-160px"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow reveal" data-i18n="home.eyebrow">Private SRHR &amp; wellness support</span>
+          <h1 class="display reveal d1" style="margin-top:22px" data-i18n="home.h1">Your body.<br>Your questions.<br><em>Your safe space.</em></h1>
+          <p class="lead reveal d2" style="margin-top:26px;max-width:34ch" data-i18n="home.lead">LOVA helps you learn, track, ask, share, and care for your sexual, reproductive, and everyday wellness — with privacy, confidence, and dignity.</p>
+          <div class="reveal d3" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:32px">
+            <a href="contact.html" class="btn btn-dark btn-lg" data-i18n="cta.getapp">Get the App</a>
+            <a href="about.html" class="btn btn-ghost btn-lg" data-i18n="cta.explore">Explore LOVA</a>
+          </div>
+          <p class="reveal d4" style="margin-top:22px;font-size:.9rem;color:var(--muted-2)" data-i18n="home.micro">Built for adults 18+. Private by design. Respectful by default.</p>
+        </div>
+
+        <div class="reveal d2 hero-stage">
+          <div class="blob" style="width:320px;height:320px;background:var(--peach);top:50px;left:50%;transform:translateX(-50%);opacity:.5"></div>
+
+          <div class="fc-float fc-period float-2">
+            <span class="fi" style="background:var(--blush);color:var(--berry)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg></span>
+            <span><span class="fk">Next period</span><br><span class="fv">In 6 days</span></span>
+          </div>
+          <div class="fc-float fc-mood float">
+            <span class="fi" style="background:var(--lavender);color:var(--plum)">🌷</span>
+            <span><span class="fk">Mood today</span><br><span class="fv">Calm &amp; creative</span></span>
+          </div>
+
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <div class="hero-greet">
+                    <div><div class="gm">Good morning</div><div class="hi">Hi, Amara 🌸</div></div>
+                    <span class="heart"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span>
+                  </div>
+                  <div class="fert-circle">
+                    <div class="fc-day">Day 12 · Follicular</div>
+                    <div class="fc-big">High</div>
+                    <div class="fc-sub">fertility window</div>
+                    <div class="fc-note">Ovulation in 3 days</div>
+                  </div>
+                  <div class="stat-row">
+                    <div class="stat-pill" style="background:var(--peach)"><div class="sl">Energy</div><div class="sv">82%</div></div>
+                    <div class="stat-pill" style="background:var(--lavender)"><div class="sl">Mood</div><div class="sv">Calm</div></div>
+                    <div class="stat-pill" style="background:var(--rose)"><div class="sl">Sleep</div><div class="sv">7.4h</div></div>
+                  </div>
+                  <div class="tip-card">
+                    <span class="tav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></span>
+                    <div><div style="font-weight:700;color:var(--ink);font-size:11px">Kungwi tip</div><div style="color:var(--muted);font-size:9.5px">Hydrate well today — your body loves it.</div></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i class="on"></i><i></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- trust strip -->
+      <div class="reveal" style="margin-top:64px;display:flex;flex-wrap:wrap;gap:12px;justify-content:center">
+        <span class="chip chip-soft">Learn</span>
+        <span class="chip chip-soft">Track periods &amp; pregnancy</span>
+        <span class="chip chip-soft">Ask privately</span>
+        <span class="chip chip-soft">Unfiltered community</span>
+        <span class="chip chip-soft">Kungwi guidance</span>
+        <span class="chip chip-soft">Care products</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INTRO ============ -->
+  <section class="section-sm bg-paper">
+    <div class="wrap-narrow center">
+      <h2 class="h1 reveal" data-i18n="home.intro">Wellness support should feel <em>safe</em>, not scary.</h2>
+      <p class="lead reveal d1" style="margin-top:24px;color:var(--muted)">Many people grow up with questions about their bodies, periods, pregnancy, protection, consent, relationships, infections, and emotions — but not everyone has a safe place to ask. Some questions feel too personal. Some are surrounded by myths, silence, or fear.</p>
+      <p class="reveal d2" style="margin-top:18px;font-family:var(--font-display);font-style:italic;font-size:1.5rem;color:var(--plum)">LOVA exists to change that.</p>
+    </div>
+  </section>
+
+  <!-- ============ WHAT LOVA DOES ============ -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">What LOVA does</span>
+        <h2 class="h2" style="margin-top:18px">One private space for your<br>whole wellness journey.</h2>
+        <p>LOVA brings together the tools, information, community, and care support people need to make informed decisions about their bodies, relationships, and wellbeing.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px">
+        <!-- cards -->
+        <article class="card card-hover reveal">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H12v16H6.5A2.5 2.5 0 0 0 4 21.5z"/><path d="M20 5.5A2.5 2.5 0 0 0 17.5 3H12v16h5.5a2.5 2.5 0 0 1 2.5 2.5z"/></svg></div>
+          <h3 class="h4">Learn</h3>
+          <p>Simple, trusted content on periods, pregnancy, contraception, consent, relationships, body changes, emotional wellbeing, and everyday wellness.</p>
+        </article>
+        <article class="card card-hover reveal d1">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div>
+          <h3 class="h4">Track</h3>
+          <p>Period and pregnancy tracking, symptom logging, mood notes, energy patterns, reminders, and wellness insights to understand your body over time.</p>
+        </article>
+        <article class="card card-hover reveal d2">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.7A8.5 8.5 0 1 1 21 11.5z"/><path d="M12 8v3M12 14h.01"/></svg></div>
+          <h3 class="h4">Ask</h3>
+          <p>Private question support for sensitive topics people may not feel comfortable asking out loud — answered with care, never judgment.</p>
+        </article>
+        <article class="card card-hover reveal">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 8a5 5 0 0 0-10 0v4l-2 3h14l-2-3z"/><path d="M9 18a3 3 0 0 0 6 0"/></svg></div>
+          <h3 class="h4">Share</h3>
+          <p>Anonymous conversations through <strong>Unfiltered</strong> — a space for real questions, real stories, polls, and peer support.</p>
+        </article>
+        <article class="card card-hover reveal d1" style="background:var(--grad-soft);border-color:var(--blush)">
+          <div class="card-icon" style="background:var(--grad-plum);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></div>
+          <h3 class="h4">Kungwi Guidance</h3>
+          <p>Culturally aware guidance from traditional SRHR and relationship guides — relatable, real-life support for body confidence, intimacy, and life transitions.</p>
+        </article>
+        <article class="card card-hover reveal d2">
+          <div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6 12 13 3.2 8.6"/><path d="M3.2 8.6 12 4l8.8 4.6v6.8L12 20l-8.8-4.6z"/><path d="M12 13v7"/></svg></div>
+          <h3 class="h4">Care</h3>
+          <p>Access selected wellness, period care, pregnancy support, protection, and personal care products — discreetly and supportively.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY LOVA EXISTS ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Why LOVA exists</span>
+          <h2 class="h2" style="margin-top:18px">Because silence should not be the <em>default</em>.</h2>
+          <p class="body-ink" style="margin-top:22px">Sexual and reproductive health is part of everyday life, yet it is often treated as something people should hide, fear, or figure out alone. LOVA helps close that gap by giving users a trusted starting point.</p>
+          <p class="body" style="margin-top:16px">We believe people deserve support that is clear, practical, culturally aware, emotionally intelligent, and non-judgmental — whether someone is tracking a period, following a pregnancy journey, learning about contraception, or preparing for intimacy.</p>
+          <a href="about.html" class="btn-link" style="margin-top:24px">Read our story <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        </div>
+        <div class="reveal d1" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+          <div class="card" style="background:var(--grad-rose);border:none"><p class="idx">01</p><p style="font-family:var(--font-display);font-size:1.3rem;margin-top:8px;color:var(--wine)">Clear, not clinical</p><p style="font-size:.92rem;color:var(--plum-soft);margin-top:6px">No complicated medical language.</p></div>
+          <div class="card" style="margin-top:28px"><p class="idx">02</p><p style="font-family:var(--font-display);font-size:1.3rem;margin-top:8px">Private by design</p><p style="font-size:.92rem;color:var(--muted);margin-top:6px">Safety and dignity at the center.</p></div>
+          <div class="card"><p class="idx">03</p><p style="font-family:var(--font-display);font-size:1.3rem;margin-top:8px">Culturally aware</p><p style="font-size:.92rem;color:var(--muted);margin-top:6px">Rooted in African realities.</p></div>
+          <div class="card" style="margin-top:28px;background:var(--wine);border:none;color:#fff"><p class="idx" style="color:var(--peach)">04</p><p style="font-family:var(--font-display);font-size:1.3rem;margin-top:8px;color:#fff">Never shame-based</p><p style="font-size:.92rem;color:rgba(255,255,255,.7);margin-top:6px">Here to inform, not embarrass.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTEXTUAL SRHR ============ -->
+  <section class="section bg-plum tex">
+    <div class="wrap">
+      <div class="shead center reveal" style="margin-inline:auto">
+        <span class="eyebrow solo">Contextual SRHR</span>
+        <h2 class="h2" style="margin-top:16px">SRHR does not happen in isolation.<br><em style="color:var(--peach)">Life gives it context.</em></h2>
+        <p style="color:rgba(255,255,255,.75)">LOVA understands that sexual and reproductive health is connected to culture, relationships, faith, privacy, money, access, confidence, safety, and the information people grow up hearing.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px">
+        <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Body</h3><p style="color:rgba(255,255,255,.72)">Periods, pregnancy, fertility, symptoms, discharge, cramps, hormones, and body changes.</p></div>
+        <div class="card reveal d1" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Choices</h3><p style="color:rgba(255,255,255,.72)">Protection, contraception, consent, communication, preparation, and safer decision making.</p></div>
+        <div class="card reveal d2" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Relationships</h3><p style="color:rgba(255,255,255,.72)">Trust, pressure, boundaries, partner conversations, emotional safety, and shared responsibility.</p></div>
+        <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Culture</h3><p style="color:rgba(255,255,255,.72)">Myths, stigma, silence, shame, privacy, expectations, traditional wisdom, and the courage to ask.</p></div>
+        <div class="card reveal d1" style="background:var(--grad-warm);border:none"><h3 class="h4" style="color:var(--wine)">Kungwi Guidance</h3><p style="color:var(--wine);opacity:.85">Traditional guides offering culturally aware support for intimacy, preparation, care, and life transitions.</p></div>
+        <div class="card reveal d2" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Care</h3><p style="color:rgba(255,255,255,.72)">Products, routines, reminders, professional support, pregnancy support, and everyday wellness habits.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURE PREVIEWS ============ -->
+  <section class="section bg-paper">
+    <div class="wrap" style="display:flex;flex-direction:column;gap:clamp(56px,8vw,104px)">
+
+      <!-- Track -->
+      <div class="hero-grid">
+        <div class="reveal" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--lavender);opacity:.5"></div>
+          <div class="phone float-2" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-h">Your cycle</p>
+                  <p class="app-sub">February · 28-day average</p>
+                  <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-top:14px">
+                    <span style="text-align:center;font-size:8px;color:var(--muted-2)">M</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">T</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">W</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">T</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">F</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">S</span><span style="text-align:center;font-size:8px;color:var(--muted-2)">S</span>
+                    <!-- calendar dots -->
+                    <span class="cal"></span><span class="cal"></span><span class="cal p"></span><span class="cal p"></span><span class="cal p"></span><span class="cal p"></span><span class="cal p"></span>
+                    <span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal f"></span><span class="cal f"></span><span class="cal f"></span>
+                    <span class="cal"></span><span class="cal o"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span>
+                    <span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span><span class="cal"></span>
+                  </div>
+                  <div style="display:flex;gap:7px;margin-top:14px;font-size:9px;flex-wrap:wrap">
+                    <span style="display:flex;align-items:center;gap:4px;color:var(--muted)"><i style="width:8px;height:8px;border-radius:50%;background:var(--coral)"></i>Period</span>
+                    <span style="display:flex;align-items:center;gap:4px;color:var(--muted)"><i style="width:8px;height:8px;border-radius:50%;background:var(--lavender-2)"></i>Fertile</span>
+                    <span style="display:flex;align-items:center;gap:4px;color:var(--muted)"><i style="width:8px;height:8px;border-radius:50%;background:var(--plum)"></i>Ovulation</span>
+                  </div>
+                  <div class="mini-card" style="margin-top:12px"><div style="font-weight:600;color:var(--ink);font-size:11px">Next period in 6 days</div><div style="color:var(--muted);font-size:10px;margin-top:2px">PMS may begin around day 24 — rest well.</div></div>
+                </div>
+                <div class="app-tabbar"><i></i><i class="on"></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal d1">
+          <span class="eyebrow">Track</span>
+          <h2 class="h2" style="margin-top:16px">Understand your body's <em>patterns</em>.</h2>
+          <p class="body-ink" style="margin-top:20px">Your body changes across days, weeks, moods, cycles, pregnancy stages, stress, and seasons of life. LOVA helps you notice those patterns instead of guessing.</p>
+          <p class="body" style="margin-top:14px">Track periods, pregnancy information, symptoms, mood, energy, reminders, and personal wellness notes — in a calm, private space designed to help you prepare and care for yourself better.</p>
+          <a href="track.html" class="btn btn-dark" style="margin-top:24px">Explore Tracking</a>
+        </div>
+      </div>
+
+      <!-- Learn -->
+      <div class="hero-grid">
+        <div class="reveal d1" style="order:1">
+          <span class="eyebrow">Learn</span>
+          <h2 class="h2" style="margin-top:16px">Clear answers for the questions people <em>whisper</em> about.</h2>
+          <p class="body-ink" style="margin-top:20px">LOVA turns sensitive wellness and SRHR topics into simple, practical, relatable learning. No complicated medical language. No fear-based messaging. No judgment.</p>
+          <p class="body" style="margin-top:14px">Learn about your body, protection, consent, contraception, pregnancy, sexual health, relationships, emotional wellbeing, and personal care — one topic at a time.</p>
+          <a href="learn.html" class="btn btn-dark" style="margin-top:24px">Start Learning</a>
+        </div>
+        <div class="reveal" style="order:2;display:flex;flex-direction:column;gap:12px;justify-content:center">
+          <div class="qcard card-hover"><span class="tag qtag">Periods</span><p class="qtext">Why is my period late?</p><span class="qarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qcard card-hover" style="background:var(--grad-soft);border-color:var(--blush)"><span class="tag qtag">Consent</span><p class="qtext">What does consent look like in real life?</p><span class="qarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qcard card-hover"><span class="tag qtag">Pregnancy</span><p class="qtext">What should I know during early pregnancy?</p><span class="qarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qcard card-hover"><span class="tag qtag">For men</span><p class="qtext">How can men support safer choices &amp; understand fertility?</p><span class="qarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+        </div>
+      </div>
+
+      <!-- Unfiltered -->
+      <div class="hero-grid">
+        <div class="reveal" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--rose);opacity:.5"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-h">Unfiltered</p>
+                  <p class="app-sub">Anonymous · respectful · guided</p>
+                  <div style="display:flex;flex-direction:column;gap:9px;margin-top:12px">
+                    <div class="mini-card"><div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--plum);font-weight:600">Anonymous · 2h</span><span style="font-size:9px;color:var(--muted-2)">♡ 48</span></div><p style="font-size:11px;color:var(--ink);margin-top:4px">Is it normal for cycles to change after stress? Asking for peace of mind.</p></div>
+                    <div class="mini-card" style="background:var(--grad-soft);border-color:var(--blush)"><span style="font-size:9px;color:var(--plum);font-weight:600">Community poll</span><p style="font-size:11px;color:var(--ink);margin-top:4px;font-weight:600">Do you track your mood with your cycle?</p><div style="height:6px;border-radius:99px;background:#fff;margin-top:7px;overflow:hidden"><div style="width:68%;height:100%;background:var(--grad-warm)"></div></div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">68% yes · 1,204 votes</div></div>
+                    <div class="mini-card"><div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--plum);font-weight:600">Anonymous · 5h</span><span style="font-size:9px;color:var(--muted-2)">♡ 91</span></div><p style="font-size:11px;color:var(--ink);margin-top:4px">How do I bring up protection without it being awkward?</p></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i></i><i></i><i class="on"></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal d1">
+          <span class="eyebrow">Unfiltered</span>
+          <h2 class="h2" style="margin-top:16px">Real questions. Real stories. <em>Anonymous</em> support.</h2>
+          <p class="body-ink" style="margin-top:20px">Unfiltered is LOVA's anonymous community space where users can ask, share, vote, respond, and learn from others going through similar experiences.</p>
+          <p style="margin-top:14px;font-family:var(--font-display);font-style:italic;font-size:1.3rem;color:var(--plum)">Honest, but guided. Open, but protected. Anonymous, but still respectful.</p>
+          <a href="unfiltered.html" class="btn btn-dark" style="margin-top:24px">Join Unfiltered</a>
+        </div>
+      </div>
+
+      <!-- Care + Partner row -->
+      <div class="grid g-2">
+        <div class="card reveal" style="background:var(--grad-rose);border:none;padding:40px">
+          <span class="tag" style="background:rgba(91,39,64,.12)">Care</span>
+          <h2 class="h3" style="margin-top:16px;color:var(--wine)">Care that meets you where you are.</h2>
+          <p style="margin-top:14px;color:var(--plum-soft)">LOVA Care helps you access selected wellness, period care, protection, pregnancy support, and personal care products — discreetly and supportively. Taking care of your body should feel normal, not embarrassing.</p>
+          <a href="care.html" class="btn btn-dark" style="margin-top:22px">Explore Care</a>
+        </div>
+        <div class="card reveal d1" style="background:var(--wine);border:none;padding:40px;color:#fff">
+          <span class="tag" style="background:rgba(255,255,255,.14);color:var(--peach)">Partners</span>
+          <h2 class="h3" style="margin-top:16px;color:#fff">Building healthier conversations across Africa.</h2>
+          <p style="margin-top:14px;color:rgba(255,255,255,.74)">LOVA works with universities, NGOs, health partners, brands, creators, and institutions to make contextual SRHR information more accessible, relatable, and stigma-free.</p>
+          <a href="partners.html" class="btn btn-light" style="margin-top:22px">Partner With LOVA</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHO IT'S FOR ============ -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Who LOVA is for</span>
+        <h2 class="h2" style="margin-top:18px">Made for real life. Made for adults.<br>Built for <em>Africa</em>.</h2>
+        <p>Designed for adults aged 18 and above who want private, simple, and respectful support for sexual, reproductive, and everyday wellness.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px">
+        <div class="card card-hover reveal"><p class="idx">For young women</p><p class="body" style="margin-top:10px">Track your cycle, follow pregnancy-related changes, understand your body, and ask questions privately — without shame.</p></div>
+        <div class="card card-hover reveal d1"><p class="idx">For men &amp; partners</p><p class="body" style="margin-top:10px">Learn about protection, consent, communication, sexual health, fertility, and how to support healthier decisions.</p></div>
+        <div class="card card-hover reveal d2"><p class="idx">For students &amp; early career</p><p class="body" style="margin-top:10px">Practical wellness and SRHR information that fits real life, independence, relationships, and personal growth.</p></div>
+        <div class="card card-hover reveal"><p class="idx">For couples</p><p class="body" style="margin-top:10px">Information that supports safer choices, better conversations, respect, trust, intimacy, and shared responsibility.</p></div>
+        <div class="card card-hover reveal d1"><p class="idx">For peer educators</p><p class="body" style="margin-top:10px">A tool to support stigma-free conversations, awareness, and informed decision making in communities.</p></div>
+        <div class="card card-hover reveal d2"><p class="idx">For institutions</p><p class="body" style="margin-top:10px">Work with LOVA to improve contextual SRHR access, wellness education, youth engagement, and care pathways.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TRUST ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead center reveal" style="margin-inline:auto">
+        <span class="eyebrow solo">Trust &amp; safety</span>
+        <h2 class="h2" style="margin-top:16px">Private by design. <em>Respectful</em> by default.</h2>
+        <p>Safety, privacy, dignity, and user control are not extra features. They are part of the foundation.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px">
+        <div class="card reveal"><h3 class="h4">Anonymous where it matters</h3><p>Participate in sensitive community conversations without showing your real name.</p></div>
+        <div class="card reveal d1"><h3 class="h4">No shame-based messaging</h3><p>LOVA avoids fear, judgment, and stigma. The goal is to inform, not embarrass.</p></div>
+        <div class="card reveal d2"><h3 class="h4">Clear community rules</h3><p>Unfiltered is guided by respect, safety, consent, and harm prevention.</p></div>
+        <div class="card reveal"><h3 class="h4">Culturally aware support</h3><p>LOVA recognizes African realities, traditional guidance, and everyday life pressures.</p></div>
+        <div class="card reveal d1"><h3 class="h4">Support pathways</h3><p>When a question requires deeper help, LOVA guides users toward appropriate support.</p></div>
+        <div class="card reveal d2"><h3 class="h4">Educational, not diagnostic</h3><p>LOVA provides wellness education and guidance. It does not replace professional medical care.</p></div>
+      </div>
+      <div class="center reveal" style="margin-top:40px"><a href="safety.html" class="btn-link">See how we protect you <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+    </div>
+  </section>
+
+  <!-- ============ KISWAHILI BRAND BAND ============ -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Kwa Kiswahili</span>
+        <h2 class="h2" style="margin-top:16px">Five promises, in the<br>language of <em>home</em>.</h2>
+        <p>LOVA speaks the way you do — clearly, in English and Kiswahili. Use the EN / SW switch in the menu anytime.</p>
+      </div>
+      <div class="kiband reveal d1" style="margin-top:32px">
+        <div class="kiline"><span class="kix">01</span><span class="ksw">Jifunze kwa lugha rahisi.</span><span class="ken">Learn in simple language.</span></div>
+        <div class="kiline"><span class="kix">02</span><span class="ksw">Uliza bila aibu.</span><span class="ken">Ask without shame.</span></div>
+        <div class="kiline"><span class="kix">03</span><span class="ksw">Fuatilia mwili wako.</span><span class="ken">Track your body.</span></div>
+        <div class="kiline"><span class="kix">04</span><span class="ksw">Shiriki kwa faragha.</span><span class="ken">Share privately.</span></div>
+        <div class="kiline"><span class="kix">05</span><span class="ksw">Jali afya yako kwa kujiamini.</span><span class="ken">Care for your health with confidence.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FINAL CTA ============ -->
+  <section class="cta-band bg-cream tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <p class="eyebrow solo" style="justify-content:center;color:var(--peach)">Wellness, Simplified.</p>
+        <h2 class="h1" style="margin-top:16px;color:#fff" data-i18n="home.final">Learn, track, ask, share,<br>and <em style="color:var(--peach)">care</em> with confidence.</h2>
+        <p class="lead" style="margin-top:18px;color:rgba(255,255,255,.82);margin-inline:auto;max-width:46ch" data-i18n="home.finallead">LOVA helps you care for your sexual and reproductive wellbeing with privacy, dignity, and confidence — rooted in African realities.</p>
+        <div style="margin-top:30px;display:flex;flex-direction:column;align-items:center;gap:16px">
+          <div class="stores" style="justify-content:center"></div>
+          <p style="font-size:.85rem;color:rgba(255,255,255,.55)">Built for adults 18+ · Available in English &amp; Kiswahili</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="about">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:460px;height:460px;background:var(--blush);top:-160px;right:-120px"></div>
+    <div class="blob" style="width:320px;height:320px;background:var(--lavender);bottom:-140px;left:-120px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow" style="padding-inline:0">
+        <span class="eyebrow reveal" data-i18n="about.eyebrow">About LOVA</span>
+        <h1 class="display reveal d1" style="margin-top:20px" data-i18n="about.h1">Support that feels<br>private, human, and <em>familiar</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:24px" data-i18n="about.lead">LOVA is a private SRHR and wellness companion for adults across Africa, helping users learn, track, ask, share, and care with confidence.</p>
+        <p class="body reveal d3" style="margin-top:16px;max-width:62ch">Rooted in African realities, cultures, privacy needs, care gaps, relationships, and everyday wellness experiences — LOVA supports adults who want to learn without shame, ask without fear, track without confusion, and care for themselves with more confidence.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- OUR STORY -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Our story</span>
+          <h2 class="h2" style="margin-top:16px">It began with a<br>simple truth.</h2>
+        </div>
+        <div class="reveal d1">
+          <p class="lead" style="color:var(--ink-soft)">People have questions about their bodies, relationships, choices, care, and wellbeing — but many do not have a safe place to ask.</p>
+          <p class="body" style="margin-top:18px">Across many communities, sexual and reproductive health is surrounded by silence, stigma, myths, and discomfort. At the same time, people are navigating real life: relationships, privacy, culture, money, pressure, pregnancy, body changes, and emotional wellbeing.</p>
+          <div style="margin-top:24px;padding-left:22px;border-left:3px solid var(--coral);display:grid;gap:6px">
+            <p style="font-family:var(--font-display);font-style:italic;font-size:1.35rem;color:var(--plum)">A way that feels private.</p>
+            <p style="font-family:var(--font-display);font-style:italic;font-size:1.35rem;color:var(--plum)">A way that feels human.</p>
+            <p style="font-family:var(--font-display);font-style:italic;font-size:1.35rem;color:var(--plum)">A way that respects culture without letting shame block care.</p>
+          </div>
+          <p class="body" style="margin-top:24px">LOVA brings together learning, period and pregnancy tracking, anonymous community, Kungwi guidance, expert-informed support, and wellness care in one platform designed around dignity, privacy, and trust.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MISSION / VISION -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="grid g-2">
+        <div class="card reveal" style="padding:44px;background:var(--grad-rose);border:none">
+          <span class="tag" style="background:rgba(91,39,64,.12)">Mission</span>
+          <p style="margin-top:18px;font-family:var(--font-display);font-size:clamp(1.5rem,2.4vw,2rem);line-height:1.2;color:var(--wine)">To simplify access to trusted and relevant sexual and reproductive health information, tools, community support, and care for adults across Africa.</p>
+        </div>
+        <div class="card reveal d1" style="padding:44px;background:var(--wine);border:none;color:#fff">
+          <span class="tag" style="background:rgba(255,255,255,.14);color:var(--peach)">Vision</span>
+          <p style="margin-top:18px;font-family:var(--font-display);font-size:clamp(1.5rem,2.4vw,2rem);line-height:1.2;color:#fff">A future where every person can understand their body, make informed choices, access support, and speak about sexual and reproductive wellbeing without shame.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT WE BELIEVE -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">What we believe</span>
+        <h2 class="h2" style="margin-top:18px">Principles that shape<br>everything we build.</h2>
+      </div>
+      <div class="grid g-2" style="margin-top:44px">
+        <div class="card card-hover reveal"><span class="idx">01</span><h3 class="h4" style="margin-top:8px">SRHR education should be clear</h3><p>People should not need complicated medical language to understand their own bodies.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">02</span><h3 class="h4" style="margin-top:8px">Context matters</h3><p>Health decisions are shaped by culture, relationships, privacy, access, emotions, beliefs, and everyday realities.</p></div>
+        <div class="card card-hover reveal"><span class="idx">03</span><h3 class="h4" style="margin-top:8px">Privacy is care</h3><p>Sensitive questions deserve safe, discreet, and respectful spaces.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">04</span><h3 class="h4" style="margin-top:8px">SRH Wellness should include dignity</h3><p>No one should feel ashamed for wanting to learn, prepare, protect themselves, or seek support.</p></div>
+        <div class="card card-hover reveal"><span class="idx">05</span><h3 class="h4" style="margin-top:8px">Men belong in the conversation</h3><p>Healthier relationships and communities require informed women, men, partners, and peers.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">06</span><h3 class="h4" style="margin-top:8px">African realities deserve thoughtful solutions</h3><p>LOVA is designed with African cultures, languages, relationships, access gaps, myths, and lived experiences in mind.</p></div>
+        <div class="card card-hover reveal"><span class="idx">07</span><h3 class="h4" style="margin-top:8px">Traditional wisdom can meet modern care</h3><p>LOVA recognizes culturally familiar guidance, including Kungwi support, while still encouraging professional medical care.</p></div>
+        <div class="card card-hover reveal d1"><span class="idx">08</span><h3 class="h4" style="margin-top:8px">Digital support should lead to better care</h3><p>Technology should help people learn, prepare, and seek the right support — not replace professional care.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT MAKES LOVA DIFFERENT -->
+  <section class="section bg-plum tex">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow solo" style="color:var(--peach)">What makes LOVA different</span>
+          <h2 class="h2" style="margin-top:16px;color:#fff">Not only one thing.<br><em style="color:var(--peach)">All of it, connected.</em></h2>
+          <p style="color:rgba(255,255,255,.76);margin-top:20px">LOVA brings learning, tracking, community, guidance, and care together in one connected contextual SRHR and wellness ecosystem.</p>
+          <a href="contact.html" class="btn btn-light" style="margin-top:26px">Get the App</a>
+        </div>
+        <div class="reveal d1" style="display:flex;flex-direction:column;gap:12px;justify-content:center">
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-md);padding:18px 22px"><span style="color:var(--peach);font-family:var(--font-display);font-style:italic">Not only</span><span style="color:#fff">a content platform.</span></div>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-md);padding:18px 22px;margin-left:18px"><span style="color:var(--peach);font-family:var(--font-display);font-style:italic">Not only</span><span style="color:#fff">a tracker.</span></div>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-md);padding:18px 22px"><span style="color:var(--peach);font-family:var(--font-display);font-style:italic">Not only</span><span style="color:#fff">a community.</span></div>
+          <div style="display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:var(--r-md);padding:18px 22px;margin-left:18px"><span style="color:var(--peach);font-family:var(--font-display);font-style:italic">Not only</span><span style="color:#fff">a shop.</span></div>
+          <div style="display:flex;align-items:center;gap:14px;background:var(--grad-warm);border-radius:var(--r-md);padding:18px 22px"><span style="color:var(--wine);font-family:var(--font-display);font-style:italic;font-weight:500">Together —</span><span style="color:var(--wine);font-weight:600">one ecosystem for holistic SRH wellbeing.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="track">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--lavender);top:-160px;right:-100px"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow reveal" data-i18n="track.eyebrow">Track</span>
+          <h1 class="display reveal d1" style="margin-top:20px" data-i18n="track.h1">Your body has<br>patterns. We help you<br><em>understand</em> them.</h1>
+          <p class="lead reveal d2" style="margin-top:24px;max-width:40ch" data-i18n="track.lead">Track your period, pregnancy journey, symptoms, mood, energy, body changes, reminders, and wellness notes — in one calm, private space.</p>
+          <p class="body reveal d3" style="margin-top:16px;max-width:48ch">Whether your cycle is regular, changing, confusing, painful, or connected to a pregnancy journey, LOVA helps you notice what is happening and prepare with more confidence.</p>
+          <a href="contact.html" class="btn btn-dark btn-lg reveal d4" style="margin-top:28px" data-i18n="cta.starttracking">Start Tracking</a>
+        </div>
+        <div class="reveal d2" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--peach);opacity:.5"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-sub">Cycle day 14</p>
+                  <p class="app-h">You're likely<br>in your <span style="color:var(--berry)">fertile window</span>.</p>
+                  <div class="cycle-ring">
+                    <svg width="150" height="150" viewBox="0 0 150 150">
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="#F1E2D6" stroke-width="11"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--coral)" stroke-width="11" stroke-dasharray="71 331" stroke-dashoffset="0"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--lavender-2)" stroke-width="11" stroke-dasharray="86 316" stroke-dashoffset="-201"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--berry)" stroke-width="11" stroke-dasharray="14 388" stroke-dashoffset="-244"/>
+                    </svg>
+                    <div class="cycle-center"><div><div class="big">14</div><div class="small">of 28 days</div></div></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div class="mini-card mini-row"><span class="mini-dot" style="background:var(--berry)"></span><div><div style="font-weight:600;color:var(--ink)">Fertility: higher</div><div style="color:var(--muted);font-size:10px">Estimate, not a guarantee</div></div></div>
+                    <div class="mini-card mini-row"><span class="mini-dot"></span><div><div style="font-weight:600;color:var(--ink)">Logged: energy high</div><div style="color:var(--muted);font-size:10px">Mood bright · sleep 7h</div></div></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i></i><i class="on"></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERIOD TRACKING -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Period tracking</span>
+        <h2 class="h2" style="margin-top:18px">Understand your cycle<br>beyond dates.</h2>
+        <p>Your menstrual cycle can affect more than when your period starts — it may influence mood, energy, appetite, sleep, skin, cramps, discharge, focus, and emotional wellbeing. Track these changes over time so you can better understand your body and know when something may need attention.</p>
+      </div>
+      <div class="reveal d1 pills-wrap" style="margin-top:36px;gap:12px">
+        <span class="track-item">Period dates</span>
+        <span class="track-item">Flow</span>
+        <span class="track-item">Cramps</span>
+        <span class="track-item">Mood</span>
+        <span class="track-item">Energy</span>
+        <span class="track-item">Symptoms</span>
+        <span class="track-item">Sleep</span>
+        <span class="track-item">Discharge</span>
+        <span class="track-item">Medication &amp; care notes</span>
+        <span class="track-item">Body changes</span>
+        <span class="track-item">Personal reminders</span>
+        <span class="track-item">Wellness notes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CYCLE PHASES (interactive) -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Cycle phases</span>
+        <h2 class="h2" style="margin-top:18px">Know your phases.<br>Care for yourself better.</h2>
+        <p>LOVA explains the phases of the menstrual cycle in simple language, so body changes feel less confusing. Tap a phase to explore it.</p>
+      </div>
+
+      <div class="reveal d1 cyclewheel-wrap" style="margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+        <div class="cyclewheel" id="cyclewheel">
+          <div class="cw-ring"></div>
+          <button class="cw-node pos-top" data-phase="menstrual" aria-label="Menstrual phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg></span>
+            <span class="cw-lbl">Menstrual</span>
+          </button>
+          <button class="cw-node pos-right" data-phase="follicular" aria-label="Follicular phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="2.4"/><circle cx="7.5" cy="12.5" r="2.4"/><circle cx="16.5" cy="12.5" r="2.4"/><circle cx="12" cy="13" r="2.2"/><path d="M12 15v5"/></svg></span>
+            <span class="cw-lbl">Follicular</span>
+          </button>
+          <button class="cw-node pos-bottom" data-phase="ovulation" aria-label="Ovulation phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
+            <span class="cw-lbl">Ovulation</span>
+          </button>
+          <button class="cw-node pos-left" data-phase="luteal" aria-label="Luteal phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A7.5 7.5 0 1 1 9.5 4a6 6 0 0 0 10.5 10.5z"/></svg></span>
+            <span class="cw-lbl">Luteal</span>
+          </button>
+          <div class="cw-center">
+            <div class="cw-day" id="cwDay">Day 6–13</div>
+            <div class="cw-name" id="cwName">Follicular</div>
+          </div>
+        </div>
+
+        <div class="cw-card card" id="cwCard">
+          <div class="cw-card-head">
+            <span class="cw-card-ic" id="cwCardIc"></span>
+            <div><span class="tag" style="background:rgba(91,39,64,.07)">Phase</span><h3 class="h3" id="cwCardName" style="margin-top:6px">Follicular</h3></div>
+          </div>
+          <div class="cw-rows" id="cwRows"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREGNANCY TRACKING -->
+  <section class="section">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Pregnancy tracking</span>
+          <h2 class="h2" style="margin-top:16px">Follow your pregnancy journey with more <em>confidence</em>.</h2>
+          <p class="body-ink" style="margin-top:20px">Pregnancy comes with questions, changes, appointments, emotions, and many moments of uncertainty. LOVA helps you track pregnancy-related information, body changes, reminders, symptoms, questions, and care notes in one private space.</p>
+          <p class="body" style="margin-top:14px">The goal is to support awareness, preparation, and confidence — while encouraging you to seek qualified medical care for pregnancy confirmation, antenatal care, warning signs, and urgent concerns.</p>
+        </div>
+        <div class="reveal d1">
+          <div class="card" style="padding:34px">
+            <p class="tag" style="white-space:nowrap">Pregnancy support</p>
+            <ul class="ticks preg-grid" style="margin-top:22px">
+              <li>Pregnancy stage notes</li>
+              <li>Body changes</li>
+              <li>Symptoms</li>
+              <li>Mood &amp; energy</li>
+              <li>Questions for providers</li>
+              <li>Appointment reminders</li>
+              <li>Care notes</li>
+              <li>Wellness prompts</li>
+              <li>Preparation checklists</li>
+              <li>Educational content</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE TRACKER MOCKUPS -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Inside the app</span>
+        <h2 class="h2" style="margin-top:18px">Two trackers,<br>one calm space.</h2>
+        <p>Switch between period and pregnancy tracking whenever your journey changes — your insights follow you.</p>
+      </div>
+      <div class="grid g-2" style="margin-top:48px;justify-items:center;gap:48px">
+
+        <!-- Pregnancy tracker -->
+        <div class="reveal" style="display:flex;flex-direction:column;align-items:center;gap:20px;position:relative">
+          <div class="blob" style="width:260px;height:260px;background:var(--peach);opacity:.4"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>15:03</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-top"><span class="mo">June 2026</span><span class="cal">▦</span></div>
+                  <div class="ax-seg"><span>Period Tracking</span><span class="on">Pregnancy Tracking</span></div>
+                  <div class="ax-stats">
+                    <div class="ax-stat"><div class="v">&lt; 1 g</div><div class="l">Weight</div></div>
+                    <div class="ax-stat"><div class="v">7&ndash;10 mm</div><div class="l">Length</div></div>
+                  </div>
+                  <div class="ax-fetus"></div>
+                  <div class="ax-week"><div class="cw">Current Week</div><div class="big">7 Week</div><div class="sub">33 weeks and 6 days left</div></div>
+                  <a class="ax-cta">End Pregnancy</a>
+                  <div class="ax-h">Weekly Insights</div>
+                  <div class="ax-insight"><span class="ic" style="background:var(--mint-bg);color:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><div><div class="t">Baby Development (week 7)</div><div class="d">Arms and legs begin to form.</div></div></div>
+                  <div class="ax-insight"><span class="ic" style="background:var(--blush);color:var(--berry)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><div><div class="t">Health Tip</div><div class="d">Avoid raw or undercooked foods.</div></div></div>
+                </div>
+                <div class="ax-tabbar" data-active="cal"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:30ch;font-size:.95rem">Weekly pregnancy insights, body changes, and gentle reminders.</p>
+        </div>
+
+        <!-- Period tracker -->
+        <div class="reveal d1" style="display:flex;flex-direction:column;align-items:center;gap:20px;position:relative">
+          <div class="blob" style="width:260px;height:260px;background:var(--lavender);opacity:.4"></div>
+          <div class="phone float-2" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>15:03</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-top"><span class="mo">June 2026</span><span class="cal">▦</span></div>
+                  <div class="ax-seg"><span class="on">Period Tracking</span><span>Pregnancy Tracking</span></div>
+                  <div class="ax-daterow">
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--lavender-2)" stroke-width="2"/></svg><div class="dn">11</div></div>
+                    <div class="ax-day sel"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="#fff" stroke="var(--mint)" stroke-width="2"/></svg><div class="dn">12</div></div>
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="var(--lavender-2)" stroke="none"/></svg><div class="dn">13</div></div>
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="var(--lavender-2)" stroke="none"/></svg><div class="dn">14</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">15</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">16</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">17</div></div>
+                  </div>
+                  <div class="ax-ovul"><div class="sm">Best chance to conceive</div><div class="od">Ovulation Day</div><div class="sm">Today is ovulation day — peak fertility.</div></div>
+                  <a class="ax-cta">Edit Period</a>
+                  <div style="display:flex;align-items:center;justify-content:space-between"><div class="ax-h">Quick Log</div><span style="font-size:10px;color:var(--coral-deep);font-weight:600">Log History</span></div>
+                  <div class="ax-quick">
+                    <div class="ax-q"><span class="qi" style="background:var(--blush);color:var(--berry)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3s7 8 7 12a7 7 0 0 1-14 0c0-4 7-12 7-12z"/></svg></span><div class="qn">Period Flow</div><div class="qd">Log flow intensity</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--sun-bg);color:var(--sun)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><div class="qn">Mood</div><div class="qd">Track emotions</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--mint-bg);color:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 8v8M8 12h8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg></span><div class="qn">Symptoms</div><div class="qd">Log pain / cramps</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--sky-bg);color:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v4H9zM7 7h10v14H7z"/><path d="M12 11v6M9 14h6"/></svg></span><div class="qn">Contraceptions</div><div class="qd">Pill, IUD, patch</div></div>
+                  </div>
+                </div>
+                <div class="ax-tabbar" data-active="cal"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:30ch;font-size:.95rem">Cycle phases, ovulation estimates, and one-tap quick logging.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FERTILE WINDOW + DISCLAIMER -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="grid g-2">
+        <div class="card reveal" style="padding:40px;background:var(--grad-rose);border:none">
+          <span class="tag" style="background:rgba(91,39,64,.12)">Fertile window</span>
+          <h3 class="h3" style="margin-top:16px;color:var(--wine)">Helpful estimates,<br>not guarantees.</h3>
+          <p style="margin-top:14px;color:var(--plum-soft)">LOVA can estimate your fertile window using the cycle information you provide. These estimates can help you understand your body better — but they should not be used as your only method of contraception.</p>
+          <p style="margin-top:12px;color:var(--plum-soft);font-weight:600">For pregnancy prevention, speak to a qualified health provider about reliable contraception options.</p>
+        </div>
+        <div class="reveal d1" style="display:flex;align-items:center">
+          <div class="note" style="background:#fff;border-left-color:var(--berry)">
+            <p class="h4" style="color:var(--berry)">Important note</p>
+            <p style="margin-top:8px">LOVA tracking tools provide estimates and educational support. They are not medical diagnosis, treatment, antenatal care, or emergency care.</p>
+            <p style="margin-top:12px">Cycle and pregnancy-related information may not be accurate for everyone — especially when cycles are irregular, postpartum, affected by stress, influenced by hormonal contraception, or changed by health conditions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Start understanding<br>your body today.</h2>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.getapp">Get the App</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="learn">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--peach);top:-150px;left:-110px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow center" style="padding-inline:0;margin-inline:auto">
+        <span class="eyebrow solo reveal" style="justify-content:center">Learn</span data-i18n="learn.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:20px" data-i18n="learn.h1">Answers that meet<br>you <em>where you are</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:24px;margin-inline:auto;max-width:54ch" data-i18n="learn.lead">Clear, trusted, and relatable contextual SRHR education for real life — understand your body, your choices, your relationships, your care options, and your wellbeing without shame, fear, or complicated language.</p>
+        <p class="body reveal d3" style="margin-top:16px;margin-inline:auto;max-width:50ch">Learn privately, at your own pace, and return whenever you need clarity.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEARNING CATEGORIES -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">What you can learn</span>
+        <h2 class="h2" style="margin-top:18px">Eleven topics, one<br>private place to explore.</h2>
+        <p>LOVA content is designed to feel simple, practical, and relevant — built to be clear, respectful, culturally aware, adult-appropriate, and supportive of professional care when needed.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px">
+        <article class="card card-hover reveal cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><div><h3 class="h4">Periods &amp; Cycle Health</h3><p>Cycle, cramps, PMS, irregular periods, ovulation, symptoms, discharge, and when to seek support.</p></div></article>
+        <article class="card card-hover reveal d1 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><div><h3 class="h4">Pregnancy &amp; Fertility</h3><p>Pregnancy signs, testing, fertility basics, antenatal preparation, body changes, and common questions.</p></div></article>
+        <article class="card card-hover reveal d2 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 4v5c0 4-3 6.5-7 9-4-2.5-7-5-7-9V7z"/></svg></span><div><h3 class="h4">Protection &amp; Contraception</h3><p>Condoms, contraceptive options, emergency contraception, dual protection, side effects, and myths.</p></div></article>
+        <article class="card card-hover reveal cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></span><div><h3 class="h4">Consent &amp; Boundaries</h3><p>What consent means, recognizing pressure, communicating boundaries, and what respect looks like.</p></div></article>
+        <article class="card card-hover reveal d1 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 21l2.1-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span><div><h3 class="h4">Relationships &amp; Communication</h3><p>Healthy relationships, difficult conversations, trust, emotional safety, intimacy, and shared responsibility.</p></div></article>
+        <article class="card card-hover reveal d2 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M5 10v1a7 7 0 0 0 14 0v-1M12 18v4"/></svg></span><div><h3 class="h4">Sexual Health</h3><p>Infections, testing, symptoms, prevention, treatment seeking, partner communication, and myths.</p></div></article>
+        <article class="card card-hover reveal cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><div><h3 class="h4">Body &amp; Self Care</h3><p>Hygiene, body changes, confidence, intimate care, comfort, and everyday wellness routines.</p></div></article>
+        <article class="card card-hover reveal d1 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><div><h3 class="h4">Mental &amp; Emotional Wellbeing</h3><p>How stress, shame, relationships, body changes, pressure, and fear can affect emotional wellbeing.</p></div></article>
+        <article class="card card-hover reveal d2 cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span><div><h3 class="h4">Men &amp; SRHR</h3><p>Responsibility, protection, consent, sexual health, fertility, communication, and supporting partners.</p></div></article>
+        <article class="card card-hover reveal cat"><span class="cat-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6 5.6 18.4"/></svg></span><div><h3 class="h4">Context &amp; Culture</h3><p>Myths, stigma, silence, shame, privacy, family expectations, traditional guidance, and real life.</p></div></article>
+        <article class="card card-hover reveal d1 cat" style="background:var(--grad-soft);border-color:var(--blush)"><span class="cat-ic" style="background:var(--grad-plum);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></span><div><h3 class="h4">Kungwi Guidance</h3><p>Culturally aware guidance on body confidence, intimacy, relationships, preparation, care, and life transitions.</p></div></article>
+        <article class="card reveal d2" style="background:var(--wine);border:none;color:#fff;display:flex;flex-direction:column;justify-content:center"><p style="font-family:var(--font-display);font-style:italic;font-size:1.5rem;color:var(--peach)">No shame.<br>No fear.<br>No confusion.</p><p style="color:rgba(255,255,255,.7);margin-top:12px;font-size:.95rem">LOVA's learning promise.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAMPLE TOPICS -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Sample topics</span>
+        <h2 class="h2" style="margin-top:18px">Start with the questions<br>people actually ask.</h2>
+      </div>
+      <div class="grid g-2" style="margin-top:40px;gap:28px">
+        <div class="card reveal" style="padding:8px 0">
+          <div class="qrow"><span class="q">Why is my period late?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">Can pregnancy happen the first time you have sex?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">How does emergency contraception work?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">What does consent look like in real life?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">When should I test for STIs?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">How can men support safer choices?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">How do I prepare before intimacy?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+        </div>
+        <div class="card reveal d1" style="padding:8px 0">
+          <div class="qrow"><span class="q">What is a normal menstrual cycle?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">What should I know before choosing contraception?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">How do I talk to my partner about protection?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">Why do I get cramps?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">What myths about sex and pregnancy should I stop believing?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">What does a healthy relationship feel like?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+          <div class="qrow"><span class="q">What can I ask a Kungwi?</span><span class="arrow"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Learn without shame.<br>Ask without fear.</h2>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.startlearning">Start Learning</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="unfiltered">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--rose);top:-150px;right:-100px"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow reveal" data-i18n="unf.eyebrow">UNFILTERED COMMUNITY</span>
+          <h1 class="display reveal d1" style="margin-top:20px" data-i18n="unf.h1">Real questions.<br>Real stories.<br><em>Anonymous</em> support.</h1>
+          <p class="lead reveal d2" style="margin-top:24px;max-width:42ch" data-i18n="unf.lead">Unfiltered is LOVA's anonymous community space for honest contextual SRHR and wellness conversations — share experiences, ask questions, respond to polls, and learn from one another without revealing your identity.</p>
+          <div class="reveal d3" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:28px">
+            <span class="chip">Anonymous</span><span class="chip">Guided</span><span class="chip">Respectful</span><span class="chip">Protected</span>
+          </div>
+        </div>
+        <div class="reveal d2" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--lavender);opacity:.5"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-h">Unfiltered</p>
+                  <p class="app-sub">Honest · guided · anonymous</p>
+                  <div style="display:flex;flex-direction:column;gap:9px;margin-top:12px">
+                    <div class="mini-card"><div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--plum);font-weight:600">Anonymous · 1h</span><span style="font-size:9px;color:var(--muted-2)">♡ 132 · 24</span></div><p style="font-size:11px;color:var(--ink);margin-top:4px">Is it normal to feel anxious before a clinic visit? How do you cope?</p></div>
+                    <div class="mini-card" style="background:var(--grad-soft);border-color:var(--blush)"><span style="font-size:9px;color:var(--plum);font-weight:600">Poll · 2,418 votes</span><p style="font-size:11px;color:var(--ink);margin-top:4px;font-weight:600">Have you talked to a partner about protection?</p><div style="height:6px;border-radius:99px;background:#fff;margin-top:7px;overflow:hidden"><div style="width:54%;height:100%;background:var(--grad-warm)"></div></div><div style="font-size:8.5px;color:var(--muted);margin-top:3px">54% yes · 46% not yet</div></div>
+                    <div class="mini-card"><div style="display:flex;justify-content:space-between"><span style="font-size:9px;color:var(--plum);font-weight:600">Anonymous · 4h</span><span style="font-size:9px;color:var(--muted-2)">♡ 89</span></div><p style="font-size:11px;color:var(--ink);margin-top:4px">My cycle changed after starting a new job. Has this happened to anyone?</p></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i></i><i></i><i class="on"></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY EXISTS -->
+  <section class="section bg-paper">
+    <div class="wrap-narrow center">
+      <span class="eyebrow solo reveal" style="justify-content:center">Why Unfiltered exists</span>
+      <h2 class="h1 reveal d1" style="margin-top:16px">Because some questions are<br>hard to ask <em>out loud</em>.</h2>
+      <p class="lead reveal d2" style="margin-top:22px;color:var(--muted)">People often carry sensitive questions alone. They wonder whether their body is normal, whether their relationship is healthy, whether they made the right choice, or whether anyone else has experienced the same thing.</p>
+      <p class="reveal d3" style="margin-top:18px;font-family:var(--font-display);font-style:italic;font-size:1.45rem;color:var(--plum)">Unfiltered gives users a place to ask, share, and learn — while still protecting privacy and community safety.</p>
+    </div>
+  </section>
+
+  <!-- WHAT YOU CAN DO -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">What you can do</span><h2 class="h2" style="margin-top:18px">Five ways to take part.</h2></div>
+      <div class="grid g-3" style="margin-top:44px">
+        <div class="card card-hover reveal"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><h3 class="h4">Share anonymously</h3><p>Post a question, confession, experience, or reflection without using your real name.</p></div>
+        <div class="card card-hover reveal d1"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 .3c0 1.7-2.5 2-2.5 3.7M12 17h.01"/></svg></div><h3 class="h4">Ask sensitive questions</h3><p>About periods, pregnancy, protection, consent, relationships, body changes, intimacy, or personal care.</p></div>
+        <div class="card card-hover reveal d2"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13h4v8H3zM10 9h4v12h-4zM17 5h4v16h-4z"/></svg></div><h3 class="h4">Respond to polls</h3><p>See what others think, feel, or experience — and learn from shared community patterns.</p></div>
+        <div class="card card-hover reveal"><div class="card-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v14H6.5A2.5 2.5 0 0 0 4 19.5z"/></svg></div><h3 class="h4">Learn from real stories</h3><p>Read experiences that help you feel less alone and more informed.</p></div>
+        <div class="card card-hover reveal d1" style="background:var(--grad-soft);border-color:var(--blush)"><div class="card-icon" style="background:var(--grad-plum);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></div><h3 class="h4">Get guided support &amp; expert opinions</h3><p>For questions that need deeper care, you can ask professional medical experts or get Kungwi guidance privately and anonymously. LOVA is here to ensure your questions are answered.</p></div>
+        <div class="card reveal d2" style="background:var(--wine);border:none;color:#fff;display:flex;flex-direction:column;justify-content:center"><p style="font-family:var(--font-display);font-style:italic;font-size:1.4rem;color:var(--peach)">Honest, but respectful.<br>Anonymous, but accountable.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE COMMUNITY MOCKUPS -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Inside Unfiltered</span>
+        <h2 class="h2" style="margin-top:18px">Confessions, experts,<br>and community polls.</h2>
+        <p>Three honest spaces — anonymous confessions, licensed expert answers, and real community polls.</p>
+      </div>
+      <div class="grid g-3" style="margin-top:48px;justify-items:center;gap:36px">
+
+        <!-- Confession feed -->
+        <div class="reveal" style="display:flex;flex-direction:column;align-items:center;gap:18px;position:relative">
+          <div class="blob" style="width:240px;height:240px;background:var(--rose);opacity:.4"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>14:59</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-title">Community</div>
+                  <div class="ax-tabs"><span class="on">Confession</span><span>Experts</span><span>Polls</span></div>
+                  <div style="display:flex;gap:6px">
+                    <span style="font-size:9px;font-weight:600;background:var(--grad-warm);color:#fff;padding:5px 14px;border-radius:999px">All</span>
+                    <span style="font-size:9px;font-weight:600;background:#fff;color:var(--ink-soft);padding:5px 14px;border-radius:999px;box-shadow:var(--shadow-sm)">Mine</span>
+                    <span style="font-size:9px;font-weight:600;background:#fff;color:var(--ink-soft);padding:5px 14px;border-radius:999px;box-shadow:var(--shadow-sm)">Saved</span>
+                  </div>
+                  <div class="ax-post">
+                    <div class="ax-head"><span class="ax-av"></span><span class="ax-tg">#null</span><span style="margin-left:auto;color:var(--muted-2);font-weight:700">⋮</span></div>
+                    <p>I was 17 when an older man in our area started helping me with transport and lunch money. Everyone said I was lucky — until I told him I had missed my period.</p>
+                    <div class="ax-meta"><span>♡ 0</span><span>💬 1</span><span>⟂ 1</span><span style="margin-left:auto">about a month ago</span></div>
+                  </div>
+                  <div class="ax-post">
+                    <div class="ax-head"><span class="ax-av"></span><span class="ax-tg">#Anxiety</span><span class="ax-tg">#Contraception</span></div>
+                    <p>My boyfriend refused to test with me, saying only "promiscuous people" go for STI screening…</p>
+                  </div>
+                </div>
+                <a class="ax-fab" style="position:relative;margin:0 13px 8px">+ Share your confession</a>
+                <div class="ax-tabbar" data-active="community"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:26ch;font-size:.92rem">Anonymous confessions — real stories, never a real name.</p>
+        </div>
+
+        <!-- Expert Q&A -->
+        <div class="reveal d1" style="display:flex;flex-direction:column;align-items:center;gap:18px;position:relative">
+          <div class="blob" style="width:240px;height:240px;background:var(--mint-bg);opacity:.6"></div>
+          <div class="phone float-2" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>14:59</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-title">Community</div>
+                  <div class="ax-tabs"><span>Confession</span><span class="on">Experts</span><span>Polls</span></div>
+                  <div class="ax-h">Expert Panel</div>
+                  <div class="ax-banner"><span style="flex:none"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 19a6 6 0 0 1 12 0M15 19a5 5 0 0 1 6.5-4.8"/></svg></span><div><div class="bt">Licensed Health Care Professionals</div><div class="bs">Gynecologists, Family &amp; Sex Therapists</div></div></div>
+                  <div class="ax-post">
+                    <div class="ax-head"><span class="ax-qmark">?</span><div style="line-height:1.1"><div style="font-size:10px;font-weight:700;color:var(--ink)">Anonymous Question</div><div style="font-size:8px;color:var(--muted)">about a month ago</div></div><span class="ax-badge pend" style="margin-left:auto">PENDING</span></div>
+                    <p>During my last gynaecology visit, the ultrasound showed a small fibroid (1.6cm). Should I be worried?</p>
+                    <div class="ax-meta"><span>💬 Tap to view replies</span></div>
+                  </div>
+                  <div class="ax-post">
+                    <div class="ax-head"><span class="ax-qmark">?</span><div style="line-height:1.1"><div style="font-size:10px;font-weight:700;color:var(--ink)">Anonymous Question</div><div style="font-size:8px;color:var(--muted)">22 days ago</div></div><span class="ax-badge ans" style="margin-left:auto">ANSWERED</span></div>
+                    <p>Is it true fibroids are more common among African women?</p>
+                  </div>
+                </div>
+                <a class="ax-fab" style="position:relative;margin:0 13px 8px">+ Ask Question</a>
+                <div class="ax-tabbar" data-active="community"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:26ch;font-size:.92rem">Verified experts answer sensitive questions, privately.</p>
+        </div>
+
+        <!-- Community poll -->
+        <div class="reveal d2" style="display:flex;flex-direction:column;align-items:center;gap:18px;position:relative">
+          <div class="blob" style="width:240px;height:240px;background:var(--lavender);opacity:.4"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>15:02</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-title">Community</div>
+                  <div class="ax-tabs"><span>Confession</span><span>Experts</span><span class="on">Polls</span></div>
+                  <div class="ax-h">Community Poll</div>
+                  <div class="ax-poll">
+                    <div style="display:flex;justify-content:space-between;align-items:center"><span class="ax-tg">#Polls 1</span><span style="font-size:8px;color:var(--muted-2)">just now</span></div>
+                    <p style="font-size:10px;font-weight:700;color:var(--ink);margin-top:6px">Je ni sawa kwa girlfriend kwenda kumfulia boyfriend wake?</p>
+                    <div class="ax-opt"><span>1. Ndio</span><span class="vt">0 Votes</span></div>
+                    <div class="ax-opt sel"><span>2. Hapana</span><span class="vt" style="color:var(--berry)">✓ 1 Vote</span></div>
+                    <div class="ax-opt"><span>3. Sina uhakika</span><span class="vt">0 Votes</span></div>
+                    <div style="font-size:8px;color:var(--muted-2);margin-top:6px">1 total vote · you have voted</div>
+                  </div>
+                  <div class="ax-poll">
+                    <span class="ax-tg">#Polls 2</span>
+                    <p style="font-size:10px;font-weight:700;color:var(--ink);margin-top:6px">Does sex have to hurt every time?</p>
+                    <div class="ax-opt sel"><span>3. See a doctor or expert</span><span class="vt" style="color:var(--berry)">✓ 1</span></div>
+                  </div>
+                </div>
+                <a class="ax-fab" style="position:relative;margin:0 13px 8px">+ Create Community Poll</a>
+                <div class="ax-tabbar" data-active="community"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:26ch;font-size:.92rem">Polls in English &amp; Kiswahili — learn from shared patterns.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMMUNITY CULTURE / GUIDELINES -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">Community culture</span><h2 class="h2" style="margin-top:18px">Designed for openness,<br>not harm.</h2><p>LOVA welcomes real conversations, but we do not allow bullying, harassment, shame, exploitation, hate, misinformation, or unsafe advice. Everyone deserves to feel respected when asking sensitive questions.</p></div>
+      <div class="grid g-2" style="margin-top:44px;gap:24px">
+        <div class="card reveal" style="padding:36px;border-color:rgba(31,138,91,.25)">
+          <h3 class="h4" style="color:#1F8A5B;display:flex;align-items:center;gap:10px">Allowed</h3>
+          <div style="margin-top:14px">
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Respectful questions &amp; personal experiences</span></div>
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Supportive responses</span></div>
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Contextual SRHR education discussions</span></div>
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Consent-focused conversations</span></div>
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Wellbeing &amp; care-seeking questions</span></div>
+            <div class="rule yes"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg></span><span>Culturally aware, respectful relationship questions</span></div>
+          </div>
+        </div>
+        <div class="card reveal d1" style="padding:36px;border-color:rgba(176,52,52,.2)">
+          <h3 class="h4" style="color:#B03434">Not allowed</h3>
+          <div style="margin-top:14px">
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Bullying, harassment, shaming, or insults</span></div>
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Medical misinformation &amp; dangerous advice</span></div>
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Threats, exploitation, hate speech, or discrimination</span></div>
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Sharing another person's private information</span></div>
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Non-consensual sexual content or requests</span></div>
+            <div class="rule no"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg></span><span>Any content involving minors in sexual situations</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY NOTE -->
+  <section class="section-sm">
+    <div class="wrap">
+      <div class="note reveal" style="background:var(--wine);border-left-color:var(--coral)">
+        <p class="h4" style="color:var(--peach)">Safety note</p>
+        <p style="color:rgba(255,255,255,.82);margin-top:8px">Unfiltered space is a learning and support community. It is not an emergency service. If you are in immediate danger, experiencing severe symptoms, or need urgent support, contact local emergency services, a trusted person, or a qualified professional.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">You're not the only one<br>wondering.</h2>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.joinunfiltered">Join Unfiltered</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="care">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--peach);top:-150px;right:-100px"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow reveal" data-i18n="care.eyebrow">LOVA CARES</span>
+          <h1 class="display reveal d1" style="margin-top:20px" data-i18n="care.h1">Care that meets<br>you <em>where you are</em>.</h1>
+          <p class="lead reveal d2" style="margin-top:24px;max-width:42ch" data-i18n="care.lead">Care products for confidence, comfort, preparation, protection, pregnancy, and everyday wellbeing — accessed in a discreet and supportive way.</p>
+          <p class="body reveal d3" style="margin-top:16px;max-width:48ch">Whether you are preparing for your period, following a pregnancy journey, looking for protection, or building a self-care routine, LOVA helps make care easier to access.</p>
+          <a href="contact.html" class="btn btn-dark btn-lg reveal d4" style="margin-top:28px" data-i18n="cta.explorecare">Explore Care</a>
+        </div>
+        <div class="reveal d2" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--rose);opacity:.5"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-h">Care</p>
+                  <p class="app-sub">Private browsing · discreet delivery</p>
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+                    <div class="mini-card" style="padding:0;overflow:hidden"><div style="aspect-ratio:1;background:var(--grad-rose);display:grid;place-items:center;font-size:8px;color:var(--plum-soft);font-family:monospace">period care</div><div style="padding:7px 9px"><div style="font-size:10px;font-weight:600;color:var(--ink)">Comfort Kit</div></div></div>
+                    <div class="mini-card" style="padding:0;overflow:hidden"><div style="aspect-ratio:1;background:linear-gradient(135deg,var(--lavender),var(--peach));display:grid;place-items:center;font-size:8px;color:var(--plum-soft);font-family:monospace">protection</div><div style="padding:7px 9px"><div style="font-size:10px;font-weight:600;color:var(--ink)">Safe Pack</div></div></div>
+                    <div class="mini-card" style="padding:0;overflow:hidden"><div style="aspect-ratio:1;background:linear-gradient(135deg,var(--peach),var(--blush));display:grid;place-items:center;font-size:8px;color:var(--plum-soft);font-family:monospace">pregnancy</div><div style="padding:7px 9px"><div style="font-size:10px;font-weight:600;color:var(--ink)">Prep Bundle</div></div></div>
+                    <div class="mini-card" style="padding:0;overflow:hidden"><div style="aspect-ratio:1;background:linear-gradient(135deg,var(--blush),var(--lavender));display:grid;place-items:center;font-size:8px;color:var(--plum-soft);font-family:monospace">self care</div><div style="padding:7px 9px"><div style="font-size:10px;font-weight:600;color:var(--ink)">Daily Care</div></div></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i></i><i></i><i></i><i class="on"></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY CARE MATTERS -->
+  <section class="section bg-paper">
+    <div class="wrap-narrow center">
+      <span class="eyebrow solo reveal" style="justify-content:center">Why care matters</span>
+      <h2 class="h1 reveal d1" style="margin-top:16px">Taking care of yourself<br>should feel <em>normal</em>.</h2>
+      <p class="lead reveal d2" style="margin-top:22px;color:var(--muted)">Many people feel embarrassed buying products related to periods, pregnancy, protection, intimate wellness, or personal care. LOVA Care is designed to make that experience feel more private, respectful, and informed.</p>
+    </div>
+  </section>
+
+  <!-- PRODUCT CATEGORIES -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">Product categories</span><h2 class="h2" style="margin-top:18px">Selected with care,<br>browsed in private.</h2></div>
+      <div class="grid g-4" style="margin-top:44px">
+        <div class="prod reveal"><div class="shot" style="background:var(--grad-rose)"><span>period care</span></div><div class="meta"><div class="nm">Period Care</div><div class="pc">Pads, liners, menstrual care &amp; cramp support.</div></div></div>
+        <div class="prod reveal d1"><div class="shot" style="background:linear-gradient(135deg,var(--peach),var(--blush))"><span>pregnancy</span></div><div class="meta"><div class="nm">Pregnancy Support</div><div class="pc">Selected pregnancy care, preparation &amp; comfort.</div></div></div>
+        <div class="prod reveal d2"><div class="shot" style="background:linear-gradient(135deg,var(--lavender),var(--peach))"><span>protection</span></div><div class="meta"><div class="nm">Protection</div><div class="pc">Condoms &amp; protection for safer, shared choices.</div></div></div>
+        <div class="prod reveal d3"><div class="shot" style="background:linear-gradient(135deg,var(--blush),var(--lavender))"><span>personal wellness</span></div><div class="meta"><div class="nm">Personal Wellness</div><div class="pc">Body care, hygiene &amp; wellness for confidence.</div></div></div>
+        <div class="prod reveal"><div class="shot" style="background:linear-gradient(135deg,var(--rose),var(--peach))"><span>intimate wellness</span></div><div class="meta"><div class="nm">Intimate Wellness</div><div class="pc">Selected adult wellness for comfort &amp; confidence.</div></div></div>
+        <div class="prod reveal d1"><div class="shot" style="background:linear-gradient(135deg,var(--peach),var(--lavender))"><span>self care</span></div><div class="meta"><div class="nm">Self Care Essentials</div><div class="pc">Simple items to feel prepared &amp; supported.</div></div></div>
+        <div class="prod reveal d2"><div class="shot" style="background:var(--grad-warm)"><span>wellness kits</span></div><div class="meta"><div class="nm">Wellness Kits</div><div class="pc">Curated bundles for periods, campus, travel &amp; more.</div></div></div>
+        <div class="prod reveal d3" style="background:var(--wine);border:none;display:flex;flex-direction:column;justify-content:center;padding:22px"><div class="nm" style="font-family:var(--font-display);font-style:italic;color:var(--peach);font-size:1.25rem">Curated for real life, across Africa.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCREET BY DESIGN -->
+  <section class="section">
+    <div class="wrap">
+      <div class="grid g-2" style="align-items:center;gap:48px">
+        <div class="reveal">
+          <span class="eyebrow">Discreet by design</span>
+          <h2 class="h2" style="margin-top:16px">Private browsing.<br><em>Respectful</em> care.</h2>
+          <p class="body-ink" style="margin-top:20px">LOVA Care is designed for sensitive wellness needs. We aim to make product discovery feel discreet, supportive, and stigma-free — from the first browse to delivery.</p>
+          <ul class="ticks" style="margin-top:22px">
+            <li>Private, judgment-free browsing</li>
+            <li>Discreet packaging and delivery</li>
+            <li>Informed product descriptions</li>
+            <li>Care bundles for every stage of life</li>
+          </ul>
+        </div>
+        <div class="reveal d1">
+          <div class="note" style="background:var(--cream-2)">
+            <p class="h4">Product disclaimer</p>
+            <p style="margin-top:8px">LOVA Care provides access to selected wellness and personal care products. Product use should follow manufacturer instructions. For medical concerns, allergies, pregnancy-related questions, infections, severe pain, or ongoing symptoms, users should seek qualified medical advice.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Care should feel<br>normal, not embarrassing.</h2>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.explorecare">Explore Care</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="partners">
+<!-- HERO -->
+  <section class="page-hero tex bg-plum" style="color:#fff">
+    <div class="blob" style="width:460px;height:460px;background:var(--berry);top:-160px;right:-100px;opacity:.5"></div>
+    <div class="blob" style="width:320px;height:320px;background:var(--plum-soft);bottom:-140px;left:-120px;opacity:.5"></div>
+    <div class="wrap">
+      <div class="wrap-narrow" style="padding-inline:0">
+        <span class="eyebrow solo reveal" style="color:var(--peach)">Partner with LOVA</span data-i18n="part.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:20px;color:#fff" data-i18n="part.h1">Building healthier<br>conversations across <em style="color:var(--peach)">Africa</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:24px;color:rgba(255,255,255,.82)" data-i18n="part.lead">LOVA works with partners who believe adults and young people deserve better access to trusted, stigma-free contextual SRHR information, wellness tools, care products, and support.</p>
+        <p class="reveal d3" style="margin-top:16px;color:rgba(255,255,255,.7);max-width:64ch">Rooted in African realities, LOVA collaborates with institutions, universities, NGOs, development partners, health providers, brands, creators, and community organizations to improve awareness, digital engagement, referral pathways, and wellbeing outcomes.</p>
+        <a href="#contact" class="btn btn-light btn-lg reveal d4" style="margin-top:28px" data-i18n="cta.partner">Partner With LOVA</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY PARTNER -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Why partner with LOVA</span>
+          <h2 class="h2" style="margin-top:16px">A digital platform for<br>healthier conversations.</h2>
+          <p class="body-ink" style="margin-top:20px">LOVA sits at the intersection of contextual SRHR education, digital health, anonymous community, youth engagement, period and pregnancy tracking, Kungwi guidance, wellness care, and demand generation.</p>
+        </div>
+        <div class="reveal d1" style="display:flex;flex-direction:column;gap:16px;justify-content:center">
+          <div class="card" style="background:var(--grad-rose);border:none;padding:26px"><p style="font-family:var(--font-display);font-style:italic;font-size:1.3rem;color:var(--wine)">For users,</p><p style="color:var(--plum-soft);margin-top:4px">LOVA is a private companion.</p></div>
+          <div class="card" style="background:var(--wine);border:none;padding:26px;color:#fff;margin-left:24px"><p style="font-family:var(--font-display);font-style:italic;font-size:1.3rem;color:var(--peach)">For partners,</p><p style="color:rgba(255,255,255,.78);margin-top:4px">LOVA is a trusted channel for education, engagement, insights, referrals, campaigns, and care access.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNERSHIP OPPORTUNITIES -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">Partnership opportunities</span><h2 class="h2" style="margin-top:18px">Many ways to work<br>together.</h2></div>
+      <div class="grid g-3" style="margin-top:44px">
+        <div class="card card-hover reveal"><h3 class="h4">Universities &amp; Colleges</h3><p>Support student wellbeing through contextual SRHR education, anonymous Q&amp;A, digital campaigns, peer engagement, and awareness activities.</p></div>
+        <div class="card card-hover reveal d1"><h3 class="h4">NGOs &amp; Development Partners</h3><p>Support SRHR programming, youth engagement, gender equity, menstrual health, contraception awareness, and referral pathways.</p></div>
+        <div class="card card-hover reveal d2"><h3 class="h4">Health Providers</h3><p>Connect users to trusted care, professional guidance, testing, contraception services, antenatal support, and appropriate referrals.</p></div>
+        <div class="card card-hover reveal"><h3 class="h4">Brands &amp; Product Partners</h3><p>Reach wellness-conscious users through selected products, education, care bundles, campaigns, and discreet commerce.</p></div>
+        <div class="card card-hover reveal d1"><h3 class="h4">Creators &amp; Educators</h3><p>Collaborate on youth-friendly SRHR content, storytelling, short videos, explainers, campaigns, and community conversations.</p></div>
+        <div class="card card-hover reveal d2" style="background:var(--grad-soft);border-color:var(--blush)"><h3 class="h4">Kungwi &amp; Cultural Guides</h3><p>Bring culturally familiar guidance into a safer, modern, digital space for adults seeking support around relationships, intimacy, and care.</p></div>
+      </div>
+      <div class="card card-hover reveal" style="margin-top:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap"><div><h3 class="h4">Employers &amp; Institutions</h3><p style="margin-top:4px">Support staff and community wellbeing with private access to SRHR education and wellness resources.</p></div></div>
+    </div>
+  </section>
+
+  <!-- HOW WE WORK -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">How we can work together</span><h2 class="h2" style="margin-top:18px">Partnership formats.</h2></div>
+      <div class="pills-wrap reveal d1" style="margin-top:32px;gap:12px">
+        <span class="chip">Digital SRHR education campaigns</span>
+        <span class="chip">Campus activations</span>
+        <span class="chip">Anonymous Q&amp;A sessions</span>
+        <span class="chip">Expert-led live sessions</span>
+        <span class="chip">Kungwi-led guidance sessions</span>
+        <span class="chip">Community polls &amp; insights</span>
+        <span class="chip">Product partnerships</span>
+        <span class="chip">Sponsored wellness kits</span>
+        <span class="chip">Referral pathways</span>
+        <span class="chip">Youth engagement campaigns</span>
+        <span class="chip">Research &amp; learning reports</span>
+        <span class="chip">Content partnerships</span>
+        <span class="chip">Care access campaigns</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHAT MAKES LOVA VALUABLE -->
+  <section class="section bg-plum tex">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow solo" style="color:var(--peach)">What makes LOVA valuable to partners</span><h2 class="h2" style="margin-top:16px;color:#fff">Designed for the questions<br>people don't ask publicly.</h2></div>
+      <div class="grid g-3" style="margin-top:44px">
+        <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Privacy-centered engagement</h3><p style="color:rgba(255,255,255,.74)">Designed for sensitive questions people may not ask publicly.</p></div>
+        <div class="card reveal d1" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Youth-friendly communication</h3><p style="color:rgba(255,255,255,.74)">Warm, relatable, and practical — not clinical or intimidating.</p></div>
+        <div class="card reveal d2" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Rooted in African realities</h3><p style="color:rgba(255,255,255,.74)">Built with African cultures, languages, care gaps, stigma, myths, and privacy needs in mind.</p></div>
+        <div class="card reveal" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Multi-feature ecosystem</h3><p style="color:rgba(255,255,255,.74)">Education, tracking, community, guidance, care, and referrals connected in one platform.</p></div>
+        <div class="card reveal d1" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:#fff"><h3 class="h4" style="color:var(--peach)">Actionable insights</h3><p style="color:rgba(255,255,255,.74)">Community questions and patterns help partners understand real needs — while respecting privacy.</p></div>
+        <div class="card reveal d2" style="background:var(--grad-warm);border:none"><h3 class="h4" style="color:var(--wine)">Referral potential</h3><p style="color:var(--wine);opacity:.85">LOVA can guide users from information to appropriate support, services, or products.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PARTNER CTA -->
+  <section class="cta-band tex" id="contact">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <span class="eyebrow solo">Let's work together</span>
+        <h2 class="h2" style="margin-top:14px;color:#fff">Let's build healthier, safer,<br>more <em style="color:var(--peach)">informed</em> communities.</h2>
+        <p class="lead" style="margin-top:18px;color:rgba(255,255,255,.82);margin-inline:auto;max-width:50ch">Partner with LOVA to make contextual SRHR education, care, and support more accessible across Africa.</p>
+        <div class="cta-actions">
+          <a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.partner">Partner With LOVA</a>
+          <a href="mailto:support@lovahealth.africa" class="btn-link">support@lovahealth.africa</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="safety">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--lavender);top:-150px;right:-100px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow" style="padding-inline:0">
+        <span class="eyebrow reveal" data-i18n="saf.eyebrow">Safety &amp; Privacy</span>
+        <h1 class="display reveal d1" style="margin-top:20px" data-i18n="saf.h1">Your wellbeing journey<br>deserves <em>respect</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:24px" data-i18n="saf.lead">LOVA is built for sensitive conversations and personal wellness journeys. That means safety, privacy, dignity, and user control matter deeply to us.</p>
+        <p class="body reveal d3" style="margin-top:16px;max-width:64ch">We want users to feel safer when learning, asking, tracking periods, tracking pregnancy-related information, sharing experiences, accessing Kungwi guidance, and seeking care.</p>
+        <div class="reveal d4" style="display:flex;gap:14px;flex-wrap:wrap;margin-top:28px">
+          <a href="#privacy-policy" class="btn btn-dark" data-i18n="f.privacy">Privacy Policy</a>
+          <a href="#terms-of-use" class="btn btn-ghost" data-i18n="f.terms">Terms of Use</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY PROMISE -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Our privacy promise</span>
+          <h2 class="h2" style="margin-top:16px">We collect only what<br>is needed.</h2>
+          <p class="body-ink" style="margin-top:20px">LOVA is designed to support private learning, period and pregnancy tracking, wellness notes, anonymous community participation, culturally aware guidance, and care access.</p>
+          <p class="body" style="margin-top:14px">We aim to collect only what is needed to provide the service, improve the experience, protect users, and meet legal requirements. We do not want users to feel exposed, judged, or unsafe when using LOVA.</p>
+        </div>
+        <div class="reveal d1">
+          <div class="card" style="padding:32px">
+            <p class="tag">What we treat with care</p>
+            <div class="grid g-2" style="gap:8px 14px;margin-top:18px">
+              <span class="chip chip-soft">Personal questions</span>
+              <span class="chip chip-soft">Period tracking</span>
+              <span class="chip chip-soft">Pregnancy information</span>
+              <span class="chip chip-soft">Cycle &amp; wellness notes</span>
+              <span class="chip chip-soft">Symptoms &amp; mood logs</span>
+              <span class="chip chip-soft">Community participation</span>
+              <span class="chip chip-soft">Sensitive SRHR interests</span>
+              <span class="chip chip-soft">Support conversations</span>
+              <span class="chip chip-soft">Kungwi guidance requests</span>
+              <span class="chip chip-soft">Account information</span>
+              <span class="chip chip-soft">Care preferences</span>
+              <span class="chip chip-soft">Reports &amp; concerns</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAFETY BLOCKS -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap-narrow">
+      <div class="reveal">
+      <div class="safe-block">
+        <span class="safe-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="10" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>
+        <div><h3 class="h3">Anonymous does not mean unsafe</h3><p class="body" style="margin-top:10px">In Unfiltered, users can participate without displaying their real name. This helps people ask and share more safely. However, anonymity does not allow harm — LOVA may review, moderate, restrict, or remove content that violates community rules or creates safety risks.</p></div>
+      </div>
+      <div class="safe-block">
+        <span class="safe-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></span>
+        <div><h3 class="h3">Cultural guidance and professional care both matter</h3><p class="body" style="margin-top:10px">LOVA may offer access to Kungwi guidance, trained guides, SRHR educators, or verified professionals — meant to provide culturally aware education, practical guidance, and emotional reassurance. Kungwi guidance does not replace medical diagnosis, treatment, antenatal care, emergency care, or professional mental health support.</p></div>
+      </div>
+      <div class="safe-block">
+        <span class="safe-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/><path d="M12 8v4M10 10h4"/></svg></span>
+        <div><h3 class="h3">Education is support. It is not a diagnosis.</h3><p class="body" style="margin-top:10px">LOVA provides educational information, wellness tools, tracking support, and guidance. It does not provide emergency care, medical diagnosis, treatment, or in-person clinical services. Users should seek qualified medical care for urgent symptoms, pregnancy concerns, infections, severe pain, or mental health emergencies.</p></div>
+      </div>
+      <div class="safe-block">
+        <span class="safe-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+        <div><h3 class="h3">Built for adults 18+</h3><p class="body" style="margin-top:10px">LOVA is designed for adults aged 18 and above. Users must follow the age requirements stated in the app, website, Terms of Use, and applicable laws.</p></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- USER CONTROLS -->
+  <section class="section">
+    <div class="wrap">
+      <div class="shead reveal"><span class="eyebrow">User controls</span><h2 class="h2" style="margin-top:18px">You should have control<br>over your experience.</h2><p>LOVA aims to give users clear ways to manage their account, report concerns, request support, review privacy information, and request eligible data deletion.</p></div>
+      <div class="grid g-3" style="margin-top:40px">
+        <div class="card reveal" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">01</span><span style="font-weight:500;color:var(--ink-soft)">Manage account details</span></div>
+        <div class="card reveal d1" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">02</span><span style="font-weight:500;color:var(--ink-soft)">Report harmful content</span></div>
+        <div class="card reveal d2" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">03</span><span style="font-weight:500;color:var(--ink-soft)">Request support</span></div>
+        <div class="card reveal" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">04</span><span style="font-weight:500;color:var(--ink-soft)">Request data deletion</span></div>
+        <div class="card reveal d1" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">05</span><span style="font-weight:500;color:var(--ink-soft)">Review Terms &amp; Privacy Policy</span></div>
+        <div class="card reveal d2" style="display:flex;align-items:center;gap:14px;padding:22px 26px"><span style="font-family:var(--font-display);color:var(--coral-deep);font-style:italic">06</span><span style="font-weight:500;color:var(--ink-soft)">Leave community spaces</span></div>
+      </div>
+      <div class="center reveal" style="margin-top:36px"><a href="contact.html" class="btn btn-dark">Contact Support</a></div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="faqs">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:420px;height:420px;background:var(--peach);top:-150px;left:-110px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow center" style="padding-inline:0;margin-inline:auto">
+        <span class="eyebrow solo reveal" style="justify-content:center">FAQs</span data-i18n="faq.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:18px" data-i18n="faq.h1">Good questions deserve<br><em>clear answers</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:22px;margin-inline:auto;max-width:46ch" data-i18n="faq.lead">Here are some of the things people often ask about LOVA.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCORDION -->
+  <section class="section-sm bg-paper">
+    <div class="wrap-narrow" data-acc-group>
+      <div class="acc open reveal" data-acc>
+        <button class="acc-q">What is LOVA?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is a private SRHR and wellness companion for adults across Africa, helping users learn, track, ask, share, and care with confidence.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Who is LOVA for?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for adults aged 18 and above — especially young women, men, partners, students, early career adults, peer educators, and anyone seeking clearer information and support for sexual, reproductive, and everyday wellness.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA only for women?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No. LOVA supports women, men, partners, and adults who want to understand contextual SRHR and wellness better. Some tools focus on period and pregnancy tracking, while others support learning, protection, consent, relationships, sexual health, emotional wellbeing, personal care, and community conversations.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA only for people in Africa?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for adults across Africa and rooted in African realities, but the platform can still support users in other countries who need clear, private, and stigma-free SRHR and wellness information.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Does LOVA include period tracking?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA supports period tracking, cycle notes, symptoms, mood, energy, body changes, reminders, and wellness insights.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Does LOVA include pregnancy tracking?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA supports pregnancy-related tracking, reminders, body changes, symptoms, questions, and care notes. Pregnancy content is educational and supportive, but it does not replace antenatal care or medical advice from a qualified health professional.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What is contextual SRHR?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Contextual SRHR means sexual and reproductive health understood in real life context. It includes the body, relationships, culture, privacy, myths, emotions, access to care, protection, consent, personal care, and the everyday decisions people make.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What is Kungwi guidance on LOVA?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Kungwi guidance refers to culturally familiar support from traditional guides who understand relationships, intimacy, preparation, body confidence, care, and sensitive life transitions. On LOVA, this guidance is brought into a modern, private, and safer digital space. It is educational and supportive — it does not replace professional medical care when a health concern requires clinical attention.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA available in Kiswahili?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for English and Kiswahili speaking users, with African audiences in mind.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA a medical app?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA provides reviewed educational information, wellness tools, tracking support, and guidance. It does not replace a doctor, counselor, emergency service, medical diagnosis, or treatment.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can LOVA predict my period?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA uses the cycle information you provide to estimate your period, fertile window, and related patterns. These predictions are helpful guides, but they are not guaranteed.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I use LOVA's cycle tracker as contraception?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No. Cycle predictions should not be used as your only method of contraception. If you want to prevent pregnancy, speak to a qualified health provider about reliable options.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I use LOVA anonymously?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Some features, such as Unfiltered community conversations, are designed for anonymous participation. Account-related features may still require certain information to operate safely and properly.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Will my community posts show my real name?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No, it won't. Unfiltered is designed for anonymous participation. Users should still avoid sharing personal details that could identify them or someone else.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is Unfiltered moderated?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA may moderate content to reduce harm, misinformation, abuse, harassment, exploitation, and unsafe behavior.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What can I find in LOVA Care?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA Care includes selected wellness, SRHR, personal care, period care, pregnancy support, protection, and self-care products and services.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I delete my data?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Users may request account deletion or eligible data deletion through the app or by contacting LOVA support.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA free?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes, Using the app is free. LOVA may also offer selected paid services and products available through consultations, customized expert support, or the Care section.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">How do experts or guides work?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA may connect users to trained guides, Kungwi guides, SRHR educators, or verified professionals for private support. Availability may vary depending on location, topic, and service type.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Still have a question?</h2>
+        <p class="lead" style="margin-top:12px">We'd love to help.</p>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.contact">Contact LOVA</a></div>
+      </div>
+    </div>
+  </section>
+</div>
+<div class="route" data-route="contact">
+<!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:420px;height:420px;background:var(--blush);top:-150px;right:-100px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow center" style="padding-inline:0;margin-inline:auto">
+        <span class="eyebrow solo reveal" style="justify-content:center">Contact LOVA</span data-i18n="con.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:18px" data-i18n="con.h1">We would love to<br><em>hear from you</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:22px;margin-inline:auto;max-width:48ch" data-i18n="con.lead">Have a question, concern, partnership idea, or support request? Reach the right team below — or send us a message.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM + CARDS -->
+  <section class="section-sm bg-paper">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start">
+        <!-- FORM -->
+        <div class="reveal" id="formWrap">
+          <div class="card" style="padding:36px">
+            <h2 class="h3">Send a message</h2>
+            <p class="body" style="margin-top:6px;margin-bottom:26px">We'll respond as soon as possible.</p>
+            <form id="contactForm" novalidate>
+              <div class="field-row">
+                <div class="field"><label for="fn">Full Name</label><input id="fn" type="text" required placeholder="Your name"></div>
+                <div class="field"><label for="em">Email Address</label><input id="em" type="email" required placeholder="you@email.com"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="ph">Phone Number</label><input id="ph" type="tel" placeholder="Optional"></div>
+                <div class="field"><label for="sub">Subject</label><input id="sub" type="text" required placeholder="How can we help?"></div>
+              </div>
+              <div class="field">
+                <label for="rs">Reason for Contact</label>
+                <select id="rs" required>
+                  <option value="">Select a reason…</option>
+                  <option>User Support</option>
+                  <option>Partnership</option>
+                  <option>Media or Campaign</option>
+                  <option>Product or Care</option>
+                  <option>Kungwi or Expert Collaboration</option>
+                  <option>Safety Concern</option>
+                  <option>Data Deletion Request</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field"><label for="msg">Message</label><textarea id="msg" required placeholder="Write your message…"></textarea></div>
+              <button type="submit" class="btn btn-dark btn-lg" style="width:100%;margin-top:6px">Send Message</button>
+              <p style="font-size:.8rem;color:var(--muted-2);margin-top:14px;text-align:center">Private by design. We treat your message with care.</p>
+            </form>
+          </div>
+        </div>
+
+        <!-- CONTACT CARDS -->
+        <div class="reveal d1" style="display:flex;flex-direction:column;gap:14px">
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span><div><div class="nm">User Support</div><div class="ds">App support, account questions, safety concerns, or data requests.</div><a class="em" href="mailto:support@lovahealth.africa">support@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6 12 13 3.2 8.6"/><path d="M3.2 8.6 12 4l8.8 4.6v6.8L12 20l-8.8-4.6z"/></svg></span><div><div class="nm">Partnerships</div><div class="ds">Universities, NGOs, brands, health partners, and funders.</div><a class="em" href="mailto:support@lovahealth.africa">partner@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-7-7 18-2.5-7.5z"/></svg></span><div><div class="nm">Media &amp; Campaigns</div><div class="ds">Content partnerships, campaigns, press, and creators.</div><a class="em" href="mailto:support@lovahealth.africa">hello@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M14 2v6h6"/></svg></span><div><div class="nm">Care &amp; Products</div><div class="ds">Product partnerships, wellness kits, and brand collaborations.</div><a class="em" href="mailto:support@lovahealth.africa">partner@lovahealth.africa</a></div></div>
+          <div class="contact-card" style="background:var(--grad-soft);border-color:var(--blush)"><span class="ic" style="background:var(--grad-plum);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></span><div><div class="nm">Kungwi &amp; Expert Support</div><div class="ds">Culturally aware guidance partnerships &amp; educator collaborations.</div><a class="em" href="mailto:support@lovahealth.africa">support@lovahealth.africa</a></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+<footer id="site-footer"></footer>
+<script src="assets/lova-i18n.js"></script>
+<script src="assets/lova.bundle.js"></script>
+<script>
+  // inject store badges into hero CTA block (after lova.js sets up)
+  (function(){
+    const tgt = document.querySelector('.cta-panel .stores');
+    if (tgt) tgt.innerHTML = `
+      <a class="store-badge" href="contact.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.9c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.1-2.8.9-3.5.9s-1.8-.8-3-.8c-1.5 0-3 .9-3.8 2.3-1.6 2.8-.4 7 1.2 9.3.8 1.1 1.7 2.4 2.9 2.3 1.2 0 1.6-.7 3-.7s1.8.7 3 .7 2-1.1 2.7-2.2c.9-1.3 1.2-2.5 1.3-2.6-.1 0-2.5-1-2.5-3.8zM14.3 6.3c.6-.8 1-1.9.9-3-1 0-2.1.6-2.8 1.4-.6.7-1.1 1.8-1 2.9 1.1.1 2.2-.5 2.9-1.3z"/></svg><span><span class="sb-top">Download on the</span><br><span class="sb-main">App Store</span></span></a>
+      <a class="store-badge" href="contact.html"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3.6 2.3 13.3 12 3.6 21.7c-.3-.2-.5-.6-.5-1.1V3.4c0-.5.2-.9.5-1.1zm11.1 11 2.4 2.4-9 5.1 6.6-7.5zm0-2.6L8.1 3.2l9 5.1-2.4 2.4zm1.4 1.3 3.9-2.2c.7.4.7 1.4 0 1.8l-3.9 2.2-2-2 2-2z"/></svg><span><span class="sb-top">GET IT ON</span><br><span class="sb-main">Google Play</span></span></a>`;
+  })();
+</script>
+<script>
+(function () {
+  const PHASES = {
+    menstrual: { name: 'Menstrual', day: 'Day 1–5', color: 'var(--coral-deep)',
+      grad: 'linear-gradient(150deg,#F08A6E,#E0633F)',
+      ic: '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+      rows: { Mood: 'Reflective, tender', Body: 'Bleeding, lower energy', Energy: 'Low — rest & restore', 'Wellness tip': 'Rest, hydrate, nourish, and move gently.' } },
+    follicular: { name: 'Follicular', day: 'Day 6–13', color: 'var(--coral-deep)',
+      grad: 'linear-gradient(150deg,#F8C29A,#EE9F6B)',
+      ic: '<circle cx="12" cy="7" r="2.4"/><circle cx="7.5" cy="12.5" r="2.4"/><circle cx="16.5" cy="12.5" r="2.4"/><circle cx="12" cy="13" r="2.2"/><path d="M12 15v5"/>',
+      rows: { Mood: 'Optimistic, creative', Body: 'Estrogen rises, energy returns', Energy: 'Rising — begin new things', 'Wellness tip': 'Start projects, strength training, social plans.' } },
+    ovulation: { name: 'Ovulation', day: 'Day 14', color: 'var(--berry)',
+      grad: 'linear-gradient(150deg,#E48BAE,#C2557D)',
+      ic: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+      rows: { Mood: 'Confident, social', Body: 'Egg released, fertility peaks', Energy: 'Peak — you feel your best', 'Wellness tip': 'Great for big moments; use protection if avoiding pregnancy.' } },
+    luteal: { name: 'Luteal', day: 'Day 15–28', color: 'var(--lavender-2)',
+      grad: 'linear-gradient(150deg,#CDBDEC,#A98FD6)',
+      ic: '<path d="M20 14.5A7.5 7.5 0 1 1 9.5 4a6 6 0 0 0 10.5 10.5z"/>',
+      rows: { Mood: 'Sensitive, inward', Body: 'PMS may begin, slowing down', Energy: 'Winding down — be gentle', 'Wellness tip': 'Prioritize sleep, hydration, comfort, and rest.' } }
+  };
+  const wheel = document.getElementById('cyclewheel');
+  if (!wheel) return;
+  const nodes = wheel.querySelectorAll('.cw-node');
+  const cwDay = document.getElementById('cwDay');
+  const cwName = document.getElementById('cwName');
+  const cwCardIc = document.getElementById('cwCardIc');
+  const cwCardName = document.getElementById('cwCardName');
+  const cwRows = document.getElementById('cwRows');
+  function select(key) {
+    const p = PHASES[key];
+    nodes.forEach(n => n.classList.toggle('on', n.dataset.phase === key));
+    cwDay.textContent = p.day;
+    cwName.textContent = p.name;
+    cwName.style.color = p.color;
+    cwCardName.textContent = p.name;
+    cwCardName.style.color = p.color;
+    cwCardIc.style.background = p.grad;
+    cwCardIc.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p.ic + '</svg>';
+    cwRows.innerHTML = Object.entries(p.rows).map(([k, v]) =>
+      `<div class="cw-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+  }
+  nodes.forEach(n => n.addEventListener('click', () => select(n.dataset.phase)));
+  select('follicular');
+})();
+</script>
+<script>
+(function(){
+  var ROUTES=['home','about','track','learn','unfiltered','care','partners','safety','faqs','contact'];
+  var FILE2ROUTE={index:'home',about:'about',track:'track',learn:'learn',unfiltered:'unfiltered',care:'care',partners:'partners',safety:'safety',faqs:'faqs',contact:'contact'};
+  function routeFromHash(){
+    var h=location.hash||'';
+    var m=h.match(/^#\/([a-z]+)/);
+    if(m&&ROUTES.indexOf(m[1])>-1) return m[1];
+    return 'home';
+  }
+  function rewriteLinks(){
+    document.querySelectorAll('a[href$=".html"]').forEach(function(a){
+      var f=a.getAttribute('href').replace('.html','').split('/').pop();
+      var r=FILE2ROUTE[f];
+      if(r){ a.setAttribute('href','#/'+r); }
+    });
+  }
+  function setActiveNav(route){
+    document.querySelectorAll('.nav-links a, .drawer-links a').forEach(function(a){
+      var on=a.getAttribute('href')==='#/'+route;
+      a.classList.toggle('active', on);
+    });
+  }
+  function show(route){
+    document.querySelectorAll('.route').forEach(function(el){
+      var on=el.dataset.route===route;
+      el.classList.toggle('active', on);
+      el.removeAttribute('data-active');
+      if(on){ el.querySelectorAll('.reveal').forEach(function(r){ r.classList.add('in'); r.style.opacity='1'; r.style.transform='none'; }); }
+    });
+    setActiveNav(route);
+    document.body.dataset.page=route;
+    // close mobile drawer if open
+    var d=document.getElementById('drawer'); if(d) d.classList.remove('open');
+    window.scrollTo(0,0);
+  }
+  function sync(){ show(routeFromHash()); }
+  // wait until header/footer built by lova.js
+  function init(){
+    rewriteLinks();
+    sync();
+    window.addEventListener('hashchange', sync);
+    // re-rewrite after any late DOM (drawer built once at load, but safe)
+    setTimeout(rewriteLinks, 60);
+    setTimeout(function(){ rewriteLinks(); sync(); }, 200);
+  }
+  if(document.getElementById('site-header') && document.querySelector('.nav-links')) init();
+  else setTimeout(init, 50);
+})();</script>
+</body>
+</html>

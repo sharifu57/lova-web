@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{var t=localStorage.getItem('lova-theme');if(t)document.documentElement.setAttribute('data-theme',t);var l=localStorage.getItem('lova-lang');if(l)document.documentElement.setAttribute('lang',l);}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Track Your Wellness | LOVA</title>
+<meta name="description" content="Track your period, pregnancy journey, symptoms, mood, energy, and wellness notes in one calm, private space with LOVA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/lova.css">
+<style>
+  .phase-tabs { display:flex; flex-wrap:wrap; gap:10px; }
+  .phase-tab { padding:12px 20px; border-radius:var(--pill); border:1.5px solid var(--line); background:#fff; font-weight:600; color:var(--ink-soft); transition:all .25s; }
+  .phase-tab.on { color:#fff; border-color:transparent; }
+  .phase-tab[data-tab="menstrual"].on { background:var(--coral-deep); }
+  .phase-tab[data-tab="follicular"].on { background:var(--plum-soft); }
+  .phase-tab[data-tab="ovulation"].on { background:var(--berry); }
+  .phase-tab[data-tab="luteal"].on { background:var(--lavender-2); color:var(--wine); }
+  .phase-panel { display:none; }
+  .phase-panel.show { display:block; animation:fade .4s ease; }
+  @keyframes fade { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+  .ring-seg { cursor:pointer; transition:opacity .2s; }
+  .track-item { display:flex; align-items:center; gap:10px; background:#fff; border:1px solid var(--line-2); border-radius:var(--pill); padding:11px 18px; font-weight:500; color:var(--ink-soft); font-size:.95rem; }
+  .track-item::before { content:""; width:9px; height:9px; border-radius:50%; background:var(--grad-warm); flex:none; }
+  .preg-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px 28px; }
+  .preg-grid li { font-size:.98rem; }
+  @media(max-width:520px){ .preg-grid { grid-template-columns:1fr; } }
+
+  /* ===== Cute cycle wheel ===== */
+  .cyclewheel { position:relative; width:min(420px, 86vw); aspect-ratio:1; margin:0 auto; }
+  .cw-ring {
+    position:absolute; inset:6%; border-radius:50%;
+    background: conic-gradient(from -45deg,
+      #F6B8A6 0deg, #E79BC0 90deg, #C9B2E6 180deg, #F4C0CC 270deg, #F6B8A6 360deg);
+    -webkit-mask: radial-gradient(circle, transparent 60%, #000 62%, #000 75%, transparent 78%);
+            mask: radial-gradient(circle, transparent 60%, #000 62%, #000 75%, transparent 78%);
+    filter: blur(7px); opacity:.6;
+  }
+  .cw-center { position:absolute; inset:0; display:grid; place-content:center; text-align:center; pointer-events:none; }
+  .cw-day { font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .cw-name { font-family:var(--font-display); font-size:clamp(1.8rem,3vw,2.6rem); color:var(--plum); line-height:1; margin-top:6px; transition:color .35s; }
+  .cw-node {
+    position:absolute; width:23%; aspect-ratio:1; border-radius:50%;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px;
+    background:#fff; color:var(--ink-soft); cursor:pointer;
+    box-shadow: 0 10px 26px -14px rgba(91,39,64,.4);
+    transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s, background .35s, color .35s;
+  }
+  .cw-node .cw-ic { width:24px; height:24px; }
+  .cw-node .cw-ic svg { width:100%; height:100%; }
+  .cw-node .cw-lbl { font-size:.74rem; font-weight:600; }
+  .pos-top { top:0; left:50%; transform:translate(-50%,-12%); }
+  .pos-right { top:50%; right:0; transform:translate(12%,-50%); }
+  .pos-bottom { bottom:0; left:50%; transform:translate(-50%,12%); }
+  .pos-left { top:50%; left:0; transform:translate(-12%,-50%); }
+  .cw-node.on { color:#fff; }
+  .cw-node[data-phase="menstrual"].on { background:linear-gradient(150deg,#F08A6E,#E0633F); }
+  .cw-node[data-phase="follicular"].on { background:linear-gradient(150deg,#F8C29A,#EE9F6B); }
+  .cw-node[data-phase="ovulation"].on { background:linear-gradient(150deg,#E48BAE,#C2557D); }
+  .cw-node[data-phase="luteal"].on { background:linear-gradient(150deg,#CDBDEC,#A98FD6); }
+  .pos-top.on { transform:translate(-50%,-12%) scale(1.14); }
+  .pos-right.on { transform:translate(12%,-50%) scale(1.14); }
+  .pos-bottom.on { transform:translate(-50%,12%) scale(1.14); }
+  .pos-left.on { transform:translate(-12%,-50%) scale(1.14); }
+  .cw-node:not(.on):hover { transform-origin:center; box-shadow:0 14px 30px -12px rgba(91,39,64,.5); }
+  .pos-top:not(.on):hover { transform:translate(-50%,-16%); }
+  .pos-right:not(.on):hover { transform:translate(16%,-50%); }
+  .pos-bottom:not(.on):hover { transform:translate(-50%,16%); }
+  .pos-left:not(.on):hover { transform:translate(-16%,-50%); }
+
+  .cw-card { padding:34px; }
+  .cw-card-head { display:flex; align-items:center; gap:16px; padding-bottom:8px; }
+  .cw-card-ic { width:50px; height:50px; border-radius:15px; flex:none; display:grid; place-items:center; color:#fff; }
+  .cw-card-ic svg { width:25px; height:25px; }
+  .cw-card-name { transition:color .35s; }
+  .cw-rows { margin-top:8px; }
+  .cw-row { display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:baseline; padding:18px 0; border-bottom:1px solid var(--line-2); }
+  .cw-row:last-child { border-bottom:none; }
+  .cw-row .k { font-size:.74rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .cw-row .v { color:var(--ink); font-size:1.02rem; }
+  @media(max-width:860px){
+    .cyclewheel-wrap { grid-template-columns:1fr !important; gap:32px !important; }
+    .cw-row { grid-template-columns:1fr; gap:3px; }
+  }
+</style>
+</head>
+<body data-page="track">
+<header id="site-header"></header>
+
+<main>
+  <!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:440px;height:440px;background:var(--lavender);top:-160px;right:-100px"></div>
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow reveal" data-i18n="track.eyebrow">Track</span>
+          <h1 class="display reveal d1" style="margin-top:20px" data-i18n="track.h1">Your body has<br>patterns. We help you<br><em>understand</em> them.</h1>
+          <p class="lead reveal d2" style="margin-top:24px;max-width:40ch" data-i18n="track.lead">Track your period, pregnancy journey, symptoms, mood, energy, body changes, reminders, and wellness notes — in one calm, private space.</p>
+          <p class="body reveal d3" style="margin-top:16px;max-width:48ch">Whether your cycle is regular, changing, confusing, painful, or connected to a pregnancy journey, LOVA helps you notice what is happening and prepare with more confidence.</p>
+          <a href="contact.html" class="btn btn-dark btn-lg reveal d4" style="margin-top:28px" data-i18n="cta.starttracking">Start Tracking</a>
+        </div>
+        <div class="reveal d2" style="display:flex;justify-content:center;position:relative">
+          <div class="blob" style="width:280px;height:280px;background:var(--peach);opacity:.5"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="app">
+                <div class="app-status"><span>9:41</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="app-body">
+                  <p class="app-sub">Cycle day 14</p>
+                  <p class="app-h">You're likely<br>in your <span style="color:var(--berry)">fertile window</span>.</p>
+                  <div class="cycle-ring">
+                    <svg width="150" height="150" viewBox="0 0 150 150">
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="#F1E2D6" stroke-width="11"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--coral)" stroke-width="11" stroke-dasharray="71 331" stroke-dashoffset="0"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--lavender-2)" stroke-width="11" stroke-dasharray="86 316" stroke-dashoffset="-201"/>
+                      <circle cx="75" cy="75" r="64" fill="none" stroke="var(--berry)" stroke-width="11" stroke-dasharray="14 388" stroke-dashoffset="-244"/>
+                    </svg>
+                    <div class="cycle-center"><div><div class="big">14</div><div class="small">of 28 days</div></div></div>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:8px">
+                    <div class="mini-card mini-row"><span class="mini-dot" style="background:var(--berry)"></span><div><div style="font-weight:600;color:var(--ink)">Fertility: higher</div><div style="color:var(--muted);font-size:10px">Estimate, not a guarantee</div></div></div>
+                    <div class="mini-card mini-row"><span class="mini-dot"></span><div><div style="font-weight:600;color:var(--ink)">Logged: energy high</div><div style="color:var(--muted);font-size:10px">Mood bright · sleep 7h</div></div></div>
+                  </div>
+                </div>
+                <div class="app-tabbar"><i></i><i class="on"></i><i></i><i></i></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PERIOD TRACKING -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Period tracking</span>
+        <h2 class="h2" style="margin-top:18px">Understand your cycle<br>beyond dates.</h2>
+        <p>Your menstrual cycle can affect more than when your period starts — it may influence mood, energy, appetite, sleep, skin, cramps, discharge, focus, and emotional wellbeing. Track these changes over time so you can better understand your body and know when something may need attention.</p>
+      </div>
+      <div class="reveal d1 pills-wrap" style="margin-top:36px;gap:12px">
+        <span class="track-item">Period dates</span>
+        <span class="track-item">Flow</span>
+        <span class="track-item">Cramps</span>
+        <span class="track-item">Mood</span>
+        <span class="track-item">Energy</span>
+        <span class="track-item">Symptoms</span>
+        <span class="track-item">Sleep</span>
+        <span class="track-item">Discharge</span>
+        <span class="track-item">Medication &amp; care notes</span>
+        <span class="track-item">Body changes</span>
+        <span class="track-item">Personal reminders</span>
+        <span class="track-item">Wellness notes</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CYCLE PHASES (interactive) -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Cycle phases</span>
+        <h2 class="h2" style="margin-top:18px">Know your phases.<br>Care for yourself better.</h2>
+        <p>LOVA explains the phases of the menstrual cycle in simple language, so body changes feel less confusing. Tap a phase to explore it.</p>
+      </div>
+
+      <div class="reveal d1 cyclewheel-wrap" style="margin-top:48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center">
+        <div class="cyclewheel" id="cyclewheel">
+          <div class="cw-ring"></div>
+          <button class="cw-node pos-top" data-phase="menstrual" aria-label="Menstrual phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/></svg></span>
+            <span class="cw-lbl">Menstrual</span>
+          </button>
+          <button class="cw-node pos-right" data-phase="follicular" aria-label="Follicular phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="2.4"/><circle cx="7.5" cy="12.5" r="2.4"/><circle cx="16.5" cy="12.5" r="2.4"/><circle cx="12" cy="13" r="2.2"/><path d="M12 15v5"/></svg></span>
+            <span class="cw-lbl">Follicular</span>
+          </button>
+          <button class="cw-node pos-bottom" data-phase="ovulation" aria-label="Ovulation phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/></svg></span>
+            <span class="cw-lbl">Ovulation</span>
+          </button>
+          <button class="cw-node pos-left" data-phase="luteal" aria-label="Luteal phase">
+            <span class="cw-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A7.5 7.5 0 1 1 9.5 4a6 6 0 0 0 10.5 10.5z"/></svg></span>
+            <span class="cw-lbl">Luteal</span>
+          </button>
+          <div class="cw-center">
+            <div class="cw-day" id="cwDay">Day 6–13</div>
+            <div class="cw-name" id="cwName">Follicular</div>
+          </div>
+        </div>
+
+        <div class="cw-card card" id="cwCard">
+          <div class="cw-card-head">
+            <span class="cw-card-ic" id="cwCardIc"></span>
+            <div><span class="tag" style="background:rgba(91,39,64,.07)">Phase</span><h3 class="h3" id="cwCardName" style="margin-top:6px">Follicular</h3></div>
+          </div>
+          <div class="cw-rows" id="cwRows"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PREGNANCY TRACKING -->
+  <section class="section">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div class="reveal">
+          <span class="eyebrow">Pregnancy tracking</span>
+          <h2 class="h2" style="margin-top:16px">Follow your pregnancy journey with more <em>confidence</em>.</h2>
+          <p class="body-ink" style="margin-top:20px">Pregnancy comes with questions, changes, appointments, emotions, and many moments of uncertainty. LOVA helps you track pregnancy-related information, body changes, reminders, symptoms, questions, and care notes in one private space.</p>
+          <p class="body" style="margin-top:14px">The goal is to support awareness, preparation, and confidence — while encouraging you to seek qualified medical care for pregnancy confirmation, antenatal care, warning signs, and urgent concerns.</p>
+        </div>
+        <div class="reveal d1">
+          <div class="card" style="padding:34px">
+            <p class="tag" style="white-space:nowrap">Pregnancy support</p>
+            <ul class="ticks preg-grid" style="margin-top:22px">
+              <li>Pregnancy stage notes</li>
+              <li>Body changes</li>
+              <li>Symptoms</li>
+              <li>Mood &amp; energy</li>
+              <li>Questions for providers</li>
+              <li>Appointment reminders</li>
+              <li>Care notes</li>
+              <li>Wellness prompts</li>
+              <li>Preparation checklists</li>
+              <li>Educational content</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE TRACKER MOCKUPS -->
+  <section class="section bg-paper">
+    <div class="wrap">
+      <div class="shead reveal">
+        <span class="eyebrow">Inside the app</span>
+        <h2 class="h2" style="margin-top:18px">Two trackers,<br>one calm space.</h2>
+        <p>Switch between period and pregnancy tracking whenever your journey changes — your insights follow you.</p>
+      </div>
+      <div class="grid g-2" style="margin-top:48px;justify-items:center;gap:48px">
+
+        <!-- Pregnancy tracker -->
+        <div class="reveal" style="display:flex;flex-direction:column;align-items:center;gap:20px;position:relative">
+          <div class="blob" style="width:260px;height:260px;background:var(--peach);opacity:.4"></div>
+          <div class="phone float" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>15:03</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-top"><span class="mo">June 2026</span><span class="cal">▦</span></div>
+                  <div class="ax-seg"><span>Period Tracking</span><span class="on">Pregnancy Tracking</span></div>
+                  <div class="ax-stats">
+                    <div class="ax-stat"><div class="v">&lt; 1 g</div><div class="l">Weight</div></div>
+                    <div class="ax-stat"><div class="v">7&ndash;10 mm</div><div class="l">Length</div></div>
+                  </div>
+                  <div class="ax-fetus"></div>
+                  <div class="ax-week"><div class="cw">Current Week</div><div class="big">7 Week</div><div class="sub">33 weeks and 6 days left</div></div>
+                  <a class="ax-cta">End Pregnancy</a>
+                  <div class="ax-h">Weekly Insights</div>
+                  <div class="ax-insight"><span class="ic" style="background:var(--mint-bg);color:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><div><div class="t">Baby Development (week 7)</div><div class="d">Arms and legs begin to form.</div></div></div>
+                  <div class="ax-insight"><span class="ic" style="background:var(--blush);color:var(--berry)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-4.5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 11c0 5.5-7 10-7 10z"/></svg></span><div><div class="t">Health Tip</div><div class="d">Avoid raw or undercooked foods.</div></div></div>
+                </div>
+                <div class="ax-tabbar" data-active="cal"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:30ch;font-size:.95rem">Weekly pregnancy insights, body changes, and gentle reminders.</p>
+        </div>
+
+        <!-- Period tracker -->
+        <div class="reveal d1" style="display:flex;flex-direction:column;align-items:center;gap:20px;position:relative">
+          <div class="blob" style="width:260px;height:260px;background:var(--lavender);opacity:.4"></div>
+          <div class="phone float-2" style="position:relative">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="ax">
+                <div class="app-status"><span>15:03</span><span class="dots"><i></i><i></i><i></i></span></div>
+                <div class="ax-body">
+                  <div class="ax-top"><span class="mo">June 2026</span><span class="cal">▦</span></div>
+                  <div class="ax-seg"><span class="on">Period Tracking</span><span>Pregnancy Tracking</span></div>
+                  <div class="ax-daterow">
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--lavender-2)" stroke-width="2"/></svg><div class="dn">11</div></div>
+                    <div class="ax-day sel"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="#fff" stroke="var(--mint)" stroke-width="2"/></svg><div class="dn">12</div></div>
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="var(--lavender-2)" stroke="none"/></svg><div class="dn">13</div></div>
+                    <div class="ax-day"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="var(--lavender-2)" stroke="none"/></svg><div class="dn">14</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">15</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">16</div></div>
+                    <div class="ax-day off"><svg class="drop" viewBox="0 0 24 28"><path d="M12 2C12 2 4 13 4 18a8 8 0 0 0 16 0C20 13 12 2 12 2Z" fill="none" stroke="var(--line)" stroke-width="2"/></svg><div class="dn">17</div></div>
+                  </div>
+                  <div class="ax-ovul"><div class="sm">Best chance to conceive</div><div class="od">Ovulation Day</div><div class="sm">Today is ovulation day — peak fertility.</div></div>
+                  <a class="ax-cta">Edit Period</a>
+                  <div style="display:flex;align-items:center;justify-content:space-between"><div class="ax-h">Quick Log</div><span style="font-size:10px;color:var(--coral-deep);font-weight:600">Log History</span></div>
+                  <div class="ax-quick">
+                    <div class="ax-q"><span class="qi" style="background:var(--blush);color:var(--berry)"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 3s7 8 7 12a7 7 0 0 1-14 0c0-4 7-12 7-12z"/></svg></span><div class="qn">Period Flow</div><div class="qd">Log flow intensity</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--sun-bg);color:var(--sun)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/></svg></span><div class="qn">Mood</div><div class="qd">Track emotions</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--mint-bg);color:var(--mint)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 8v8M8 12h8"/><rect x="3" y="3" width="18" height="18" rx="5"/></svg></span><div class="qn">Symptoms</div><div class="qd">Log pain / cramps</div></div>
+                    <div class="ax-q"><span class="qi" style="background:var(--sky-bg);color:var(--sky)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3h6v4H9zM7 7h10v14H7z"/><path d="M12 11v6M9 14h6"/></svg></span><div class="qn">Contraceptions</div><div class="qd">Pill, IUD, patch</div></div>
+                  </div>
+                </div>
+                <div class="ax-tabbar" data-active="cal"></div>
+              </div>
+            </div>
+          </div>
+          <p class="body" style="text-align:center;max-width:30ch;font-size:.95rem">Cycle phases, ovulation estimates, and one-tap quick logging.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FERTILE WINDOW + DISCLAIMER -->
+  <section class="section bg-cream2 tex">
+    <div class="wrap">
+      <div class="grid g-2">
+        <div class="card reveal" style="padding:40px;background:var(--grad-rose);border:none">
+          <span class="tag" style="background:rgba(91,39,64,.12)">Fertile window</span>
+          <h3 class="h3" style="margin-top:16px;color:var(--wine)">Helpful estimates,<br>not guarantees.</h3>
+          <p style="margin-top:14px;color:var(--plum-soft)">LOVA can estimate your fertile window using the cycle information you provide. These estimates can help you understand your body better — but they should not be used as your only method of contraception.</p>
+          <p style="margin-top:12px;color:var(--plum-soft);font-weight:600">For pregnancy prevention, speak to a qualified health provider about reliable contraception options.</p>
+        </div>
+        <div class="reveal d1" style="display:flex;align-items:center">
+          <div class="note" style="background:#fff;border-left-color:var(--berry)">
+            <p class="h4" style="color:var(--berry)">Important note</p>
+            <p style="margin-top:8px">LOVA tracking tools provide estimates and educational support. They are not medical diagnosis, treatment, antenatal care, or emergency care.</p>
+            <p style="margin-top:12px">Cycle and pregnancy-related information may not be accurate for everyone — especially when cycles are irregular, postpartum, affected by stress, influenced by hormonal contraception, or changed by health conditions.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Start understanding<br>your body today.</h2>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.getapp">Get the App</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="assets/tweaks-panel.jsx"></script>
+<script type="text/babel" src="assets/lova-tweaks.jsx"></script>
+<script src="assets/lova-i18n.js"></script>
+<script src="assets/lova.js"></script>
+<script>
+(function () {
+  const PHASES = {
+    menstrual: { name: 'Menstrual', day: 'Day 1–5', color: 'var(--coral-deep)',
+      grad: 'linear-gradient(150deg,#F08A6E,#E0633F)',
+      ic: '<path d="M12 3s6 7 6 11a6 6 0 0 1-12 0c0-4 6-11 6-11z"/>',
+      rows: { Mood: 'Reflective, tender', Body: 'Bleeding, lower energy', Energy: 'Low — rest & restore', 'Wellness tip': 'Rest, hydrate, nourish, and move gently.' } },
+    follicular: { name: 'Follicular', day: 'Day 6–13', color: 'var(--coral-deep)',
+      grad: 'linear-gradient(150deg,#F8C29A,#EE9F6B)',
+      ic: '<circle cx="12" cy="7" r="2.4"/><circle cx="7.5" cy="12.5" r="2.4"/><circle cx="16.5" cy="12.5" r="2.4"/><circle cx="12" cy="13" r="2.2"/><path d="M12 15v5"/>',
+      rows: { Mood: 'Optimistic, creative', Body: 'Estrogen rises, energy returns', Energy: 'Rising — begin new things', 'Wellness tip': 'Start projects, strength training, social plans.' } },
+    ovulation: { name: 'Ovulation', day: 'Day 14', color: 'var(--berry)',
+      grad: 'linear-gradient(150deg,#E48BAE,#C2557D)',
+      ic: '<circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2"/>',
+      rows: { Mood: 'Confident, social', Body: 'Egg released, fertility peaks', Energy: 'Peak — you feel your best', 'Wellness tip': 'Great for big moments; use protection if avoiding pregnancy.' } },
+    luteal: { name: 'Luteal', day: 'Day 15–28', color: 'var(--lavender-2)',
+      grad: 'linear-gradient(150deg,#CDBDEC,#A98FD6)',
+      ic: '<path d="M20 14.5A7.5 7.5 0 1 1 9.5 4a6 6 0 0 0 10.5 10.5z"/>',
+      rows: { Mood: 'Sensitive, inward', Body: 'PMS may begin, slowing down', Energy: 'Winding down — be gentle', 'Wellness tip': 'Prioritize sleep, hydration, comfort, and rest.' } }
+  };
+  const wheel = document.getElementById('cyclewheel');
+  if (!wheel) return;
+  const nodes = wheel.querySelectorAll('.cw-node');
+  const cwDay = document.getElementById('cwDay');
+  const cwName = document.getElementById('cwName');
+  const cwCardIc = document.getElementById('cwCardIc');
+  const cwCardName = document.getElementById('cwCardName');
+  const cwRows = document.getElementById('cwRows');
+  function select(key) {
+    const p = PHASES[key];
+    nodes.forEach(n => n.classList.toggle('on', n.dataset.phase === key));
+    cwDay.textContent = p.day;
+    cwName.textContent = p.name;
+    cwName.style.color = p.color;
+    cwCardName.textContent = p.name;
+    cwCardName.style.color = p.color;
+    cwCardIc.style.background = p.grad;
+    cwCardIc.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' + p.ic + '</svg>';
+    cwRows.innerHTML = Object.entries(p.rows).map(([k, v]) =>
+      `<div class="cw-row"><span class="k">${k}</span><span class="v">${v}</span></div>`).join('');
+  }
+  nodes.forEach(n => n.addEventListener('click', () => select(n.dataset.phase)));
+  select('follicular');
+})();
+</script>

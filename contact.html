@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{var t=localStorage.getItem('lova-theme');if(t)document.documentElement.setAttribute('data-theme',t);var l=localStorage.getItem('lova-lang');if(l)document.documentElement.setAttribute('lang',l);}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact LOVA</title>
+<meta name="description" content="Have a question, concern, partnership idea, or support request? We would love to hear from you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/lova.css">
+<style>
+  .field { display:flex; flex-direction:column; gap:7px; margin-bottom:18px; }
+  .field label { font-size:.85rem; font-weight:600; color:var(--ink-soft); }
+  .field input, .field select, .field textarea {
+    font-family:inherit; font-size:1rem; color:var(--ink);
+    background:var(--paper); border:1.5px solid var(--line); border-radius:14px;
+    padding:14px 16px; transition:border-color .2s, box-shadow .2s; width:100%;
+  }
+  .field textarea { resize:vertical; min-height:130px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline:none; border-color:var(--plum); box-shadow:0 0 0 4px rgba(91,39,64,.08); }
+  .field .invalid { border-color:#B03434; box-shadow:0 0 0 4px rgba(176,52,52,.08); }
+  .field-row { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  @media(max-width:620px){ .field-row { grid-template-columns:1fr; } }
+  .contact-card { display:flex; gap:16px; align-items:flex-start; padding:22px; border-radius:var(--r-md); background:var(--paper); border:1px solid var(--line-2); transition:transform .3s, box-shadow .3s; }
+  .contact-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-card); }
+  .contact-card .ic { width:44px; height:44px; border-radius:13px; flex:none; display:grid; place-items:center; background:var(--grad-rose); color:var(--plum); }
+  .contact-card .ic svg { width:21px; height:21px; }
+  .contact-card .nm { font-family:var(--font-display); font-size:1.1rem; color:var(--ink); }
+  .contact-card .ds { font-size:.88rem; color:var(--muted); margin-top:2px; }
+  .contact-card .em { font-size:.88rem; color:var(--plum); font-weight:600; font-style:normal; margin-top:6px; display:block; }
+</style>
+</head>
+<body data-page="contact">
+<header id="site-header"></header>
+
+<main>
+  <!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:420px;height:420px;background:var(--blush);top:-150px;right:-100px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow center" style="padding-inline:0;margin-inline:auto">
+        <span class="eyebrow solo reveal" style="justify-content:center">Contact LOVA</span data-i18n="con.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:18px" data-i18n="con.h1">We would love to<br><em>hear from you</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:22px;margin-inline:auto;max-width:48ch" data-i18n="con.lead">Have a question, concern, partnership idea, or support request? Reach the right team below — or send us a message.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FORM + CARDS -->
+  <section class="section-sm bg-paper">
+    <div class="wrap">
+      <div style="display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:start">
+        <!-- FORM -->
+        <div class="reveal" id="formWrap">
+          <div class="card" style="padding:36px">
+            <h2 class="h3">Send a message</h2>
+            <p class="body" style="margin-top:6px;margin-bottom:26px">We'll respond as soon as possible.</p>
+            <form id="contactForm" novalidate>
+              <div class="field-row">
+                <div class="field"><label for="fn">Full Name</label><input id="fn" type="text" required placeholder="Your name"></div>
+                <div class="field"><label for="em">Email Address</label><input id="em" type="email" required placeholder="you@email.com"></div>
+              </div>
+              <div class="field-row">
+                <div class="field"><label for="ph">Phone Number</label><input id="ph" type="tel" placeholder="Optional"></div>
+                <div class="field"><label for="sub">Subject</label><input id="sub" type="text" required placeholder="How can we help?"></div>
+              </div>
+              <div class="field">
+                <label for="rs">Reason for Contact</label>
+                <select id="rs" required>
+                  <option value="">Select a reason…</option>
+                  <option>User Support</option>
+                  <option>Partnership</option>
+                  <option>Media or Campaign</option>
+                  <option>Product or Care</option>
+                  <option>Kungwi or Expert Collaboration</option>
+                  <option>Safety Concern</option>
+                  <option>Data Deletion Request</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field"><label for="msg">Message</label><textarea id="msg" required placeholder="Write your message…"></textarea></div>
+              <button type="submit" class="btn btn-dark btn-lg" style="width:100%;margin-top:6px">Send Message</button>
+              <p style="font-size:.8rem;color:var(--muted-2);margin-top:14px;text-align:center">Private by design. We treat your message with care.</p>
+            </form>
+          </div>
+        </div>
+
+        <!-- CONTACT CARDS -->
+        <div class="reveal d1" style="display:flex;flex-direction:column;gap:14px">
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></span><div><div class="nm">User Support</div><div class="ds">App support, account questions, safety concerns, or data requests.</div><a class="em" href="mailto:support@lovahealth.africa">support@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.6 12 13 3.2 8.6"/><path d="M3.2 8.6 12 4l8.8 4.6v6.8L12 20l-8.8-4.6z"/></svg></span><div><div class="nm">Partnerships</div><div class="ds">Universities, NGOs, brands, health partners, and funders.</div><a class="em" href="mailto:support@lovahealth.africa">partner@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l18-7-7 18-2.5-7.5z"/></svg></span><div><div class="nm">Media &amp; Campaigns</div><div class="ds">Content partnerships, campaigns, press, and creators.</div><a class="em" href="mailto:support@lovahealth.africa">hello@lovahealth.africa</a></div></div>
+          <div class="contact-card"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l5 5v13a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/><path d="M14 2v6h6"/></svg></span><div><div class="nm">Care &amp; Products</div><div class="ds">Product partnerships, wellness kits, and brand collaborations.</div><a class="em" href="mailto:support@lovahealth.africa">partner@lovahealth.africa</a></div></div>
+          <div class="contact-card" style="background:var(--grad-soft);border-color:var(--blush)"><span class="ic" style="background:var(--grad-plum);color:#fff"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5 5.5.8-4 3.9 1 5.5L12 21l-5 2.6 1-5.5-4-3.9L9.5 8z"/></svg></span><div><div class="nm">Kungwi &amp; Expert Support</div><div class="ds">Culturally aware guidance partnerships &amp; educator collaborations.</div><a class="em" href="mailto:support@lovahealth.africa">support@lovahealth.africa</a></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="assets/tweaks-panel.jsx"></script>
+<script type="text/babel" src="assets/lova-tweaks.jsx"></script>
+<script src="assets/lova-i18n.js"></script>
+<script src="assets/lova.js"></script>
+</body>
+</html>

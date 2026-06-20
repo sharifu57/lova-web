@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<script>try{var t=localStorage.getItem('lova-theme');if(t)document.documentElement.setAttribute('data-theme',t);var l=localStorage.getItem('lova-lang');if(l)document.documentElement.setAttribute('lang',l);}catch(e){}</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Frequently Asked Questions | LOVA</title>
+<meta name="description" content="Good questions deserve clear answers. Here are some of the things people often ask about LOVA.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/lova.css">
+<style>
+  .acc { border:1px solid var(--line-2); background:var(--paper); border-radius:var(--r-md); margin-bottom:14px; overflow:hidden; transition:border-color .3s, box-shadow .3s; }
+  .acc.open { border-color:var(--blush); box-shadow:var(--shadow-card); }
+  .acc-q { width:100%; display:flex; align-items:center; justify-content:space-between; gap:18px; text-align:left; padding:24px 28px; font-family:var(--font-display); font-size:1.22rem; color:var(--ink); }
+  .acc-q .pl { flex:none; width:30px; height:30px; border-radius:50%; background:var(--cream-2); display:grid; place-items:center; transition:background .3s, transform .3s; color:var(--plum); }
+  .acc.open .acc-q .pl { background:var(--grad-warm); transform:rotate(45deg); }
+  .acc-q .pl svg { width:15px; height:15px; }
+  .acc-a { max-height:0; overflow:hidden; transition:max-height .4s cubic-bezier(.3,.7,.3,1); }
+  .acc.open .acc-a { max-height:340px; }
+  .acc-a-inner { padding:0 28px 26px; color:var(--muted); line-height:1.6; }
+</style>
+</head>
+<body data-page="faqs">
+<header id="site-header"></header>
+
+<main>
+  <!-- HERO -->
+  <section class="page-hero tex">
+    <div class="blob" style="width:420px;height:420px;background:var(--peach);top:-150px;left:-110px"></div>
+    <div class="wrap">
+      <div class="wrap-narrow center" style="padding-inline:0;margin-inline:auto">
+        <span class="eyebrow solo reveal" style="justify-content:center">FAQs</span data-i18n="faq.eyebrow">
+        <h1 class="display reveal d1" style="margin-top:18px" data-i18n="faq.h1">Good questions deserve<br><em>clear answers</em>.</h1>
+        <p class="lead reveal d2" style="margin-top:22px;margin-inline:auto;max-width:46ch" data-i18n="faq.lead">Here are some of the things people often ask about LOVA.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACCORDION -->
+  <section class="section-sm bg-paper">
+    <div class="wrap-narrow" data-acc-group>
+      <div class="acc open reveal" data-acc>
+        <button class="acc-q">What is LOVA?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is a private SRHR and wellness companion for adults across Africa, helping users learn, track, ask, share, and care with confidence.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Who is LOVA for?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for adults aged 18 and above — especially young women, men, partners, students, early career adults, peer educators, and anyone seeking clearer information and support for sexual, reproductive, and everyday wellness.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA only for women?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No. LOVA supports women, men, partners, and adults who want to understand contextual SRHR and wellness better. Some tools focus on period and pregnancy tracking, while others support learning, protection, consent, relationships, sexual health, emotional wellbeing, personal care, and community conversations.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA only for people in Africa?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for adults across Africa and rooted in African realities, but the platform can still support users in other countries who need clear, private, and stigma-free SRHR and wellness information.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Does LOVA include period tracking?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA supports period tracking, cycle notes, symptoms, mood, energy, body changes, reminders, and wellness insights.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Does LOVA include pregnancy tracking?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA supports pregnancy-related tracking, reminders, body changes, symptoms, questions, and care notes. Pregnancy content is educational and supportive, but it does not replace antenatal care or medical advice from a qualified health professional.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What is contextual SRHR?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Contextual SRHR means sexual and reproductive health understood in real life context. It includes the body, relationships, culture, privacy, myths, emotions, access to care, protection, consent, personal care, and the everyday decisions people make.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What is Kungwi guidance on LOVA?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Kungwi guidance refers to culturally familiar support from traditional guides who understand relationships, intimacy, preparation, body confidence, care, and sensitive life transitions. On LOVA, this guidance is brought into a modern, private, and safer digital space. It is educational and supportive — it does not replace professional medical care when a health concern requires clinical attention.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA available in Kiswahili?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA is designed for English and Kiswahili speaking users, with African audiences in mind.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA a medical app?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA provides reviewed educational information, wellness tools, tracking support, and guidance. It does not replace a doctor, counselor, emergency service, medical diagnosis, or treatment.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can LOVA predict my period?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA uses the cycle information you provide to estimate your period, fertile window, and related patterns. These predictions are helpful guides, but they are not guaranteed.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I use LOVA's cycle tracker as contraception?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No. Cycle predictions should not be used as your only method of contraception. If you want to prevent pregnancy, speak to a qualified health provider about reliable options.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I use LOVA anonymously?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Some features, such as Unfiltered community conversations, are designed for anonymous participation. Account-related features may still require certain information to operate safely and properly.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Will my community posts show my real name?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">No, it won't. Unfiltered is designed for anonymous participation. Users should still avoid sharing personal details that could identify them or someone else.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is Unfiltered moderated?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes. LOVA may moderate content to reduce harm, misinformation, abuse, harassment, exploitation, and unsafe behavior.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">What can I find in LOVA Care?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA Care includes selected wellness, SRHR, personal care, period care, pregnancy support, protection, and self-care products and services.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Can I delete my data?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Users may request account deletion or eligible data deletion through the app or by contacting LOVA support.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">Is LOVA free?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">Yes, Using the app is free. LOVA may also offer selected paid services and products available through consultations, customized expert support, or the Care section.</div></div>
+      </div>
+      <div class="acc reveal" data-acc>
+        <button class="acc-q">How do experts or guides work?<span class="pl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span></button>
+        <div class="acc-a"><div class="acc-a-inner">LOVA may connect users to trained guides, Kungwi guides, SRHR educators, or verified professionals for private support. Availability may vary depending on location, topic, and service type.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-band tex">
+    <div class="wrap">
+      <div class="cta-panel reveal">
+        <div class="blob" style="width:300px;height:300px;background:var(--berry);top:-120px;right:-60px;opacity:.45"></div>
+        <div class="blob" style="width:240px;height:240px;background:var(--coral);bottom:-120px;left:-60px;opacity:.3"></div>
+        <h2 class="h2" style="color:#fff">Still have a question?</h2>
+        <p class="lead" style="margin-top:12px">We'd love to help.</p>
+        <div class="cta-actions"><a href="contact.html" class="btn btn-light btn-lg" data-i18n="cta.contact">Contact LOVA</a></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer id="site-footer"></footer>
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="assets/tweaks-panel.jsx"></script>
+<script type="text/babel" src="assets/lova-tweaks.jsx"></script>
+<script src="assets/lova-i18n.js"></script>
+<script src="assets/lova.js"></script>
+</body>
+</html>
